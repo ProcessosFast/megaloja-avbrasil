@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -12,7 +12,8 @@ import { d, diff, iso } from "@/lib/dominio";
 
 const WD = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
 const SITUACOES: Situacao[] = ["No prazo", "Atenção", "Atrasado", "Concluído"];
-const LABEL_COL = "minmax(230px,300px)";
+// Encolhe em telas estreitas (vw) para sobrar espaço para os dias, sem nunca ficar ilegível.
+const LABEL_COL = "clamp(130px,38vw,260px)";
 
 // Estilo de barra por situação — portado de legacy/INDEX.html (.task.b-*, linhas 136-142).
 function barClass(x: AcaoComEstado): string {
@@ -46,6 +47,7 @@ interface CronogramaTabProps {
 export function CronogramaTab({ acoes }: CronogramaTabProps) {
   const [fFrente, setFFrente] = useState<string>("");
   const [fSit, setFSit] = useState<string>("");
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const dias = useMemo<DayMeta[]>(() => {
     const out: DayMeta[] = [];
@@ -91,6 +93,17 @@ export function CronogramaTab({ acoes }: CronogramaTabProps) {
 
   const gridTemplateColumns = `${LABEL_COL} repeat(${dias.length}, minmax(30px, 1fr))`;
 
+  // Abre o cronograma já rolado até hoje, em vez de deixar o usuário arrastar 20 dias no celular.
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+    const hojeEl = container.querySelector<HTMLElement>("[data-today]");
+    const labelEl = container.querySelector<HTMLElement>("[data-label-col]");
+    if (!hojeEl) return;
+    const offset = labelEl?.offsetWidth ?? 0;
+    container.scrollLeft = Math.max(0, hojeEl.offsetLeft - offset - 8);
+  }, []);
+
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -125,10 +138,11 @@ export function CronogramaTab({ acoes }: CronogramaTabProps) {
         </div>
       </div>
 
-      <div className="max-h-[70vh] overflow-auto rounded-lg border border-border">
+      <div ref={scrollRef} className="max-h-[70vh] overflow-auto rounded-lg border border-border overscroll-x-contain">
         <div className="grid min-w-max" style={{ gridTemplateColumns, gridAutoRows: "minmax(42px, auto)" }}>
           {/* Cabeçalho */}
           <div
+            data-label-col
             className="sticky top-0 left-0 z-30 flex items-end border-r border-b-2 border-foreground bg-background px-3 py-1.5 text-xs text-muted-foreground"
             style={{ gridColumn: 1, gridRow: 1 }}
           >
@@ -137,6 +151,7 @@ export function CronogramaTab({ acoes }: CronogramaTabProps) {
           {dias.map((day, i) => (
             <div
               key={day.isoT}
+              data-today={day.isHoje ? "" : undefined}
               style={{ gridColumn: i + 2, gridRow: 1 }}
               className={`sticky top-0 z-20 border-b-2 border-foreground px-1 py-1.5 text-center text-xs leading-tight ${cellTint(day)} ${
                 day.isFeriado ? "text-destructive" : "text-muted-foreground"
@@ -174,7 +189,7 @@ export function CronogramaTab({ acoes }: CronogramaTabProps) {
                   title={x.a}
                 >
                   <span className="truncate">{x.a}</span>
-                  {x.r && <span className="truncate text-[11px] text-muted-foreground">{x.r}</span>}
+                  {x.r && <span className="hidden truncate text-[11px] text-muted-foreground sm:block">{x.r}</span>}
                 </div>
                 {dias.map((day, i) => (
                   <div
