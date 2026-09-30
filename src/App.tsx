@@ -19,7 +19,7 @@ import { useEstado } from "@/lib/storage";
 const OPCAO_PENDENTE_CUSTOM = "Aguardando decisão";
 
 const TAB_CLASS =
-  "h-auto rounded-md border border-transparent px-4 py-2 text-sm font-semibold text-foreground/70 transition-colors hover:border-border hover:bg-accent hover:text-foreground data-active:border-primary data-active:bg-primary data-active:text-primary-foreground data-active:shadow-none after:hidden";
+  "h-auto shrink-0 whitespace-nowrap rounded-md border border-transparent px-4 py-2 text-sm font-semibold text-foreground/70 transition-colors hover:border-border hover:bg-accent hover:text-foreground data-active:border-primary data-active:bg-primary data-active:text-primary-foreground data-active:shadow-none after:hidden";
 
 export default function App() {
   const { estado, modo, podeEditar, salvar, remover } = useEstado();
@@ -82,7 +82,7 @@ export default function App() {
 
       <main className="w-full px-4 pb-16 sm:px-6 lg:px-10">
         <Tabs value={aba} onValueChange={setAba}>
-          <TabsList className="mb-6 h-auto flex-wrap gap-1.5 rounded-lg border border-border bg-card p-1.5">
+          <TabsList className="group-data-horizontal/tabs:h-auto mb-6 flex w-full flex-nowrap justify-start gap-1.5 overflow-x-auto rounded-lg border border-border bg-card p-1.5">
             <TabsTrigger value="dashboard" className={TAB_CLASS}>
               Dashboard
             </TabsTrigger>
