@@ -7,7 +7,7 @@ export function Hero() {
     falta > 0 ? `D-${falta}` : falta === 0 ? "É hoje" : `${Math.abs(falta)} dia(s) após a mudança`;
 
   return (
-    <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-6">
+    <div className="flex w-full flex-wrap items-center justify-between gap-4 px-4 py-6 sm:px-6 lg:px-10">
       <div>
         <h1 className="flex items-center gap-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
           MEGA LOJA AV BRASIL

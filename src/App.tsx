@@ -48,7 +48,7 @@ export default function App() {
       <Header atualizadoLabel={atualizadoLabel} />
       <Hero />
 
-      <main className="mx-auto max-w-6xl px-4 pb-16">
+      <main className="w-full px-4 pb-16 sm:px-6 lg:px-10">
         <Tabs value={aba} onValueChange={setAba}>
           <TabsList className="mb-6 flex-wrap">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>

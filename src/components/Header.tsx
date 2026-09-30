@@ -5,7 +5,7 @@ interface HeaderProps {
 export function Header({ atualizadoLabel }: HeaderProps) {
   return (
     <header className="border-b border-border bg-background">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-4">
+      <div className="flex w-full flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-6 lg:px-10">
         <div className="flex items-center gap-3">
           <svg
             className="h-7 w-auto text-foreground"
