@@ -17,14 +17,30 @@ export interface DecisaoPatch {
   atualizadoEm?: string;
 }
 
+// Decisão criada manualmente pelo usuário (não faz parte dos dados base do projeto).
+export interface DecisaoCustom {
+  titulo: string;
+  aprovador: string;
+  prazo: string;
+  descricao: string;
+  impacto: string;
+  status: string;
+  data: string;
+  criadoEm: string;
+  atualizadoEm?: string;
+}
+
 export type EstadoAcoes = Record<string, AcaoPatch>;
 export type EstadoDecisoes = Record<string, DecisaoPatch>;
+export type EstadoDecisoesCustom = Record<string, DecisaoCustom>;
 
 export interface Estado {
   acoes: EstadoAcoes;
   decisoes: EstadoDecisoes;
+  decisoesCustom: EstadoDecisoesCustom;
 }
 
+type Colecao = "acoes" | "decisoes" | "decisoesCustom";
 type Modo = "carregando" | "online" | "local";
 
 interface ClaudeCollection {
@@ -32,7 +48,10 @@ interface ClaudeCollection {
     cb: (snap: { docs: { id: string; data: () => unknown }[] }) => void,
     onError?: (e: { code?: string }) => void,
   ) => void;
-  doc: (id: string) => { set: (data: unknown, opts?: { merge?: boolean }) => Promise<void> };
+  doc: (id: string) => {
+    set: (data: unknown, opts?: { merge?: boolean }) => Promise<void>;
+    delete: () => Promise<void>;
+  };
 }
 
 interface ClaudeDb {
@@ -47,14 +66,18 @@ declare global {
   }
 }
 
+function estadoVazio(): Estado {
+  return { acoes: {}, decisoes: {}, decisoesCustom: {} };
+}
+
 function lerLocal(): Estado {
   try {
     const s = JSON.parse(localStorage.getItem(LOCAL_KEY) || "null");
-    if (s) return { acoes: s.acoes || {}, decisoes: s.decisoes || {} };
+    if (s) return { acoes: s.acoes || {}, decisoes: s.decisoes || {}, decisoesCustom: s.decisoesCustom || {} };
   } catch {
     // ignora estado local corrompido
   }
-  return { acoes: {}, decisoes: {} };
+  return estadoVazio();
 }
 
 function gravarLocal(estado: Estado) {
@@ -103,6 +126,14 @@ export function useEstado() {
           if (!cancelado) setEstado((prev) => ({ ...prev, decisoes: o }));
         }, falha);
 
+        db.collection("decisoesCustom").onSnapshot((snap) => {
+          const o: EstadoDecisoesCustom = {};
+          snap.docs.forEach((x) => {
+            o[x.id] = x.data() as DecisaoCustom;
+          });
+          if (!cancelado) setEstado((prev) => ({ ...prev, decisoesCustom: o }));
+        }, falha);
+
         if (!cancelado) setModo("online");
       } catch {
         if (!cancelado) {
@@ -119,7 +150,7 @@ export function useEstado() {
   }, []);
 
   const salvar = useCallback(
-    async (col: "acoes" | "decisoes", id: string, patch: AcaoPatch | DecisaoPatch) => {
+    async (col: Colecao, id: string, patch: AcaoPatch | DecisaoPatch | Partial<DecisaoCustom>) => {
       setEstado((prev) => {
         const alvo = prev[col];
         const antes = alvo[id];
@@ -140,5 +171,26 @@ export function useEstado() {
     [modo],
   );
 
-  return { estado, modo, podeEditar, salvar };
+  const remover = useCallback(
+    async (col: Colecao, id: string) => {
+      setEstado((prev) => {
+        const alvo = { ...prev[col] };
+        delete alvo[id];
+        const proximo: Estado = { ...prev, [col]: alvo };
+        if (modo !== "online") gravarLocal(proximo);
+        return proximo;
+      });
+
+      if (dbRef.current) {
+        try {
+          await dbRef.current.collection(col).doc(id).delete();
+        } catch {
+          // falha de escrita remota; estado local já foi atualizado
+        }
+      }
+    },
+    [modo],
+  );
+
+  return { estado, modo, podeEditar, salvar, remover };
 }

@@ -1,24 +1,22 @@
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ATENCAO, DECISOES, FRENTES } from "@/data/projeto";
+import { ATENCAO, FRENTES } from "@/data/projeto";
 import type { AcaoComEstado } from "@/lib/dominio";
-import { d, decPendente, diff, fmt, hoje } from "@/lib/dominio";
+import { d, diff, fmt, hoje } from "@/lib/dominio";
 import { SITUACAO_BADGE } from "@/lib/situacao-ui";
-import type { EstadoDecisoes } from "@/lib/storage";
 
 interface DashboardTabProps {
   acoes: AcaoComEstado[];
-  estadoDecisoes: EstadoDecisoes;
+  decisoesPendentes: number;
 }
 
-export function DashboardTab({ acoes, estadoDecisoes }: DashboardTabProps) {
+export function DashboardTab({ acoes, decisoesPendentes }: DashboardTabProps) {
   const tot = acoes.length;
   const conc = acoes.filter((x) => x.s === "Concluído").length;
   const and = acoes.filter((x) => x.s === "Em andamento").length;
   const late = acoes.filter((x) => x.sit === "Atrasado").length;
   const warn = acoes.filter((x) => x.sit === "Atenção").length;
-  const decP = DECISOES.filter((x) => decPendente(x, estadoDecisoes)).length;
   const pct = tot ? Math.round(((conc + and * 0.5) / tot) * 100) : 0;
   const semResp = acoes.filter((x) => !x.r && x.s !== "Concluído").length;
 
@@ -42,7 +40,7 @@ export function DashboardTab({ acoes, estadoDecisoes }: DashboardTabProps) {
     { label: "Em andamento", value: and },
     { label: "Atrasadas", value: late, tone: late > 0 ? "text-destructive" : undefined },
     { label: "Em atenção", value: warn },
-    { label: "Decisões pendentes", value: decP },
+    { label: "Decisões pendentes", value: decisoesPendentes },
     { label: "Progresso geral", value: `${pct}%` },
   ];
 
