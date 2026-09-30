@@ -12,21 +12,31 @@ import { d, diff, iso } from "@/lib/dominio";
 
 const WD = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
 const SITUACOES: Situacao[] = ["No prazo", "Atenção", "Atrasado", "Concluído"];
+const LABEL_COL = "minmax(230px,300px)";
 
-const BAR_CLASS: Record<string, string> = {
-  "Não iniciado": "bg-status-todo",
-  "Em andamento": "bg-status-doing",
-  "Concluído": "bg-status-ok",
-  "Atenção": "bg-status-warn",
-  "Atrasado": "bg-destructive",
-};
-
+// Estilo de barra por situação — portado de legacy/INDEX.html (.task.b-*, linhas 136-142).
 function barClass(x: AcaoComEstado): string {
-  if (x.s === "Concluído") return BAR_CLASS["Concluído"];
-  if (x.sit === "Atrasado") return BAR_CLASS["Atrasado"];
-  if (x.sit === "Atenção") return BAR_CLASS["Atenção"];
-  if (x.s === "Em andamento") return BAR_CLASS["Em andamento"];
-  return BAR_CLASS["Não iniciado"];
+  if (x.marco) return "bg-[repeating-linear-gradient(45deg,var(--primary)_0_8px,var(--foreground)_8px_16px)]";
+  if (x.s === "Concluído") return "bg-status-ok";
+  if (x.sit === "Atrasado") return "bg-destructive";
+  if (x.sit === "Atenção") return "border-2 border-status-warn bg-status-warn-soft";
+  if (x.s === "Em andamento") return "bg-status-doing";
+  return "border-2 border-status-todo bg-status-todo-soft";
+}
+
+interface DayMeta {
+  date: Date;
+  isoT: string;
+  isHoje: boolean;
+  isFeriado: boolean;
+  isWeekend: boolean;
+}
+
+function cellTint(day: DayMeta): string {
+  if (day.isHoje) return "bg-primary/10";
+  if (day.isFeriado) return "bg-holiday";
+  if (day.isWeekend) return "bg-weekend";
+  return "";
 }
 
 interface CronogramaTabProps {
@@ -37,23 +47,49 @@ export function CronogramaTab({ acoes }: CronogramaTabProps) {
   const [fFrente, setFFrente] = useState<string>("");
   const [fSit, setFSit] = useState<string>("");
 
-  const dias = useMemo(() => {
-    const out: Date[] = [];
+  const dias = useMemo<DayMeta[]>(() => {
+    const out: DayMeta[] = [];
     const fim = d(PROJETO.fim);
+    const hojeIso = iso(new Date());
+    const feriados = new Set(PROJETO.feriados);
     for (let t = d(PROJETO.inicio); diff(t, fim) <= 0; t = new Date(t.getTime() + 86400000)) {
-      out.push(t);
+      const isoT = iso(t);
+      out.push({
+        date: t,
+        isoT,
+        isHoje: isoT === hojeIso,
+        isFeriado: feriados.has(isoT),
+        isWeekend: t.getDay() === 0 || t.getDay() === 6,
+      });
     }
     return out;
   }, []);
-
-  const hojeIso = iso(new Date());
-  const feriados = new Set(PROJETO.feriados);
 
   const filtradas = acoes.filter(
     (x) => (!fFrente || x.f === fFrente) && (!fSit || x.sit === fSit),
   );
 
-  const gridTemplateColumns = `220px repeat(${dias.length}, minmax(28px, 1fr))`;
+  const grupos = FRENTES.map((fr) => ({
+    frente: fr,
+    itens: filtradas.filter((x) => x.f === fr),
+  })).filter((g) => g.itens.length > 0);
+
+  type Linha =
+    | { tipo: "grupo"; frente: string; row: number }
+    | { tipo: "item"; acao: AcaoComEstado; row: number };
+
+  const linhas: Linha[] = [];
+  let cursor = 2; // linha 1 = cabeçalho de dias
+  for (const g of grupos) {
+    linhas.push({ tipo: "grupo", frente: g.frente, row: cursor });
+    cursor++;
+    for (const item of g.itens) {
+      linhas.push({ tipo: "item", acao: item, row: cursor });
+      cursor++;
+    }
+  }
+
+  const gridTemplateColumns = `${LABEL_COL} repeat(${dias.length}, minmax(30px, 1fr))`;
 
   return (
     <div className="space-y-4">
@@ -89,55 +125,67 @@ export function CronogramaTab({ acoes }: CronogramaTabProps) {
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-border">
-        <div className="grid min-w-max" style={{ gridTemplateColumns }}>
+      <div className="max-h-[70vh] overflow-auto rounded-lg border border-border">
+        <div className="grid min-w-max" style={{ gridTemplateColumns, gridAutoRows: "minmax(42px, auto)" }}>
+          {/* Cabeçalho */}
           <div
-            className="sticky left-0 z-10 border-b border-border bg-muted px-2 py-1 text-xs font-medium text-muted-foreground"
+            className="sticky top-0 left-0 z-30 flex items-end border-r border-b-2 border-foreground bg-background px-3 py-1.5 text-xs text-muted-foreground"
             style={{ gridColumn: 1, gridRow: 1 }}
           >
             Ação
           </div>
-          {dias.map((t, i) => {
-            const isoT = iso(t);
-            const isHoje = isoT === hojeIso;
-            const isFeriado = feriados.has(isoT);
-            const isWeekend = t.getDay() === 0 || t.getDay() === 6;
-            return (
-              <div
-                key={isoT}
-                style={{ gridColumn: i + 2, gridRow: 1 }}
-                className={`border-b border-l border-border px-1 py-1 text-center text-[10px] leading-tight ${
-                  isHoje
-                    ? "bg-primary/10 font-bold text-primary"
-                    : isFeriado
-                      ? "bg-holiday text-muted-foreground"
-                      : isWeekend
-                        ? "bg-weekend text-muted-foreground"
-                        : "text-muted-foreground"
-                }`}
-              >
-                <div>{WD[t.getDay()]}</div>
-                <div>{String(t.getDate()).padStart(2, "0")}</div>
-              </div>
-            );
-          })}
+          {dias.map((day, i) => (
+            <div
+              key={day.isoT}
+              style={{ gridColumn: i + 2, gridRow: 1 }}
+              className={`sticky top-0 z-20 border-b-2 border-foreground px-1 py-1.5 text-center text-xs leading-tight ${cellTint(day)} ${
+                day.isFeriado ? "text-destructive" : "text-muted-foreground"
+              }`}
+            >
+              <span className="block text-[11px] text-muted-foreground">{WD[day.date.getDay()]}</span>
+              <span className="block font-heading text-base font-bold leading-none">
+                {String(day.date.getDate()).padStart(2, "0")}
+              </span>
+            </div>
+          ))}
 
-          {filtradas.map((x, i) => {
-            const startCol = 2 + diff(d(x.i), dias[0]);
+          {/* Linhas: grupos por frente + ações, com sombreamento de dia por trás das barras */}
+          {linhas.map((linha) => {
+            if (linha.tipo === "grupo") {
+              return (
+                <div
+                  key={`g-${linha.frente}`}
+                  className="sticky left-0 border-t border-border bg-background px-3 pt-3 pb-1 font-heading text-lg font-bold"
+                  style={{ gridColumn: "1 / -1", gridRow: linha.row }}
+                >
+                  {linha.frente}
+                </div>
+              );
+            }
+
+            const x = linha.acao;
+            const startCol = 2 + diff(d(x.i), dias[0].date);
             const span = diff(d(x.p), d(x.i)) + 1;
-            const gridRow = i + 2; // linha 1 = cabeçalho de dias
             return (
               <div key={x.id} className="contents">
                 <div
-                  className="truncate border-b border-border px-2 py-1.5 text-xs text-foreground"
-                  style={{ gridColumn: 1, gridRow }}
+                  className="sticky left-0 z-10 flex min-h-[42px] flex-col justify-center border-r border-b border-border bg-background px-3 py-1.5 text-xs text-foreground"
+                  style={{ gridColumn: 1, gridRow: linha.row }}
                   title={x.a}
                 >
-                  {x.a}
+                  <span className="truncate">{x.a}</span>
+                  {x.r && <span className="truncate text-[11px] text-muted-foreground">{x.r}</span>}
                 </div>
+                {dias.map((day, i) => (
+                  <div
+                    key={x.id + day.isoT}
+                    style={{ gridColumn: i + 2, gridRow: linha.row }}
+                    className={`border-b border-l border-dashed border-border ${cellTint(day)}`}
+                  />
+                ))}
                 <div
-                  className={`my-1.5 h-3 rounded-full ${barClass(x)} ${x.marco ? "ring-2 ring-primary ring-offset-1" : ""}`}
-                  style={{ gridColumnStart: startCol, gridColumnEnd: `span ${span}`, gridRow }}
+                  className={`z-[1] my-2.5 h-[18px] self-center rounded-[3px] ${barClass(x)}`}
+                  style={{ gridColumnStart: startCol, gridColumnEnd: `span ${span}`, gridRow: linha.row, marginInline: 3 }}
                   title={`${x.a} · ${x.sit}`}
                 />
               </div>
@@ -147,12 +195,12 @@ export function CronogramaTab({ acoes }: CronogramaTabProps) {
       </div>
 
       <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
-        <LegendDot className="bg-status-todo" label="Não iniciado" />
-        <LegendDot className="bg-status-doing" label="Em andamento" />
-        <LegendDot className="bg-status-ok" label="Concluído" />
-        <LegendDot className="bg-status-warn" label="Atenção (vence em até 2 dias)" />
-        <LegendDot className="bg-destructive" label="Atrasado · Dia da mudança" />
-        <LegendDot className="bg-holiday" label="Feriado 12/10" />
+        <LegendDot className="border-2 border-status-todo bg-status-todo-soft rounded-[3px]" label="Não iniciado" />
+        <LegendDot className="bg-status-doing rounded-[3px]" label="Em andamento" />
+        <LegendDot className="bg-status-ok rounded-[3px]" label="Concluído" />
+        <LegendDot className="border-2 border-status-warn bg-status-warn-soft rounded-[3px]" label="Atenção (vence em até 2 dias)" />
+        <LegendDot className="bg-destructive rounded-[3px]" label="Atrasado · Dia da mudança" />
+        <LegendDot className="bg-holiday rounded-[3px]" label="Feriado 12/10" />
       </div>
     </div>
   );
@@ -161,7 +209,7 @@ export function CronogramaTab({ acoes }: CronogramaTabProps) {
 function LegendDot({ className, label }: { className: string; label: string }) {
   return (
     <span className="flex items-center gap-1.5">
-      <span className={`h-2.5 w-2.5 rounded-full ${className}`} />
+      <span className={`h-2.5 w-4 ${className}`} />
       {label}
     </span>
   );
