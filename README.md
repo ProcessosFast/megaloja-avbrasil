@@ -3,6 +3,8 @@
 Dashboard de acompanhamento da implantação e mudança da MEGA LOJA AV BRASIL.
 React + TypeScript + Vite + Tailwind CSS + shadcn/ui + Recharts.
 
+**Publicado em:** https://megaloja-avbrasil.vercel.app
+
 ## Desenvolvimento
 
 ```bash
@@ -20,8 +22,7 @@ Gera os arquivos estáticos em `dist/`.
 
 ## Publicação
 
-O push para `main` dispara `.github/workflows/deploy.yml`, que builda o
-projeto e publica `dist/` no GitHub Pages automaticamente.
+O push para `main` dispara o deploy automático na Vercel.
 
 ## Estrutura
 
