@@ -11,6 +11,7 @@ export const d = (s: string): Date => {
 };
 
 export const fmt = (s: string): string => {
+  if (!s) return "—";
   const x = d(s);
   return String(x.getDate()).padStart(2, "0") + "/" + String(x.getMonth() + 1).padStart(2, "0");
 };
@@ -25,7 +26,7 @@ export const diff = (a: Date, b: Date): number => Math.round((a.getTime() - b.ge
 export const iso = (t: Date): string =>
   t.getFullYear() + "-" + String(t.getMonth() + 1).padStart(2, "0") + "-" + String(t.getDate()).padStart(2, "0");
 
-export type Situacao = "Concluído" | "No prazo" | "Atenção" | "Atrasado";
+export type Situacao = "Concluído" | "No prazo" | "Atenção" | "Atrasado" | "Sem prazo";
 
 export interface AcaoComEstado extends Acao {
   sit: Situacao;
@@ -33,6 +34,7 @@ export interface AcaoComEstado extends Acao {
 
 export function situacao(x: { s: Status; p: string }): Situacao {
   if (x.s === "Concluído") return "Concluído";
+  if (!x.p) return "Sem prazo";
   const falta = diff(d(x.p), hoje);
   if (falta < 0) return "Atrasado";
   if (falta <= 2) return "Atenção";
@@ -64,10 +66,3 @@ export function decPendente(x: Decisao, estDecisoes: EstadoDecisoes): boolean {
 export function decisoesPendentesCount(estDecisoes: EstadoDecisoes): number {
   return DECISOES.filter((x) => decPendente(x, estDecisoes)).length;
 }
-
-export const pillClass: Record<Situacao, string> = {
-  "Concluído": "s-ok",
-  "No prazo": "s-prazo",
-  "Atenção": "s-warn",
-  "Atrasado": "s-late",
-};

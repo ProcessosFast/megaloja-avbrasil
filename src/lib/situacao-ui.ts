@@ -5,4 +5,5 @@ export const SITUACAO_BADGE: Record<Situacao, string> = {
   "No prazo": "bg-secondary text-secondary-foreground border-transparent",
   "Atenção": "bg-status-warn-soft text-status-warn border-transparent",
   "Atrasado": "bg-status-late-soft text-destructive border-transparent",
+  "Sem prazo": "bg-muted text-muted-foreground border-transparent",
 };

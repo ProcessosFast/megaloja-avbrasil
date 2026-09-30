@@ -11,7 +11,7 @@ import type { AcaoComEstado, Situacao } from "@/lib/dominio";
 import { d, diff, iso } from "@/lib/dominio";
 
 const WD = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
-const SITUACOES: Situacao[] = ["No prazo", "Atenção", "Atrasado", "Concluído"];
+const SITUACOES: Situacao[] = ["No prazo", "Atenção", "Atrasado", "Concluído", "Sem prazo"];
 // Encolhe em telas estreitas (vw) para sobrar espaço para os dias, sem nunca ficar ilegível.
 const LABEL_COL = "clamp(130px,38vw,260px)";
 
@@ -179,8 +179,9 @@ export function CronogramaTab({ acoes }: CronogramaTabProps) {
             }
 
             const x = linha.acao;
-            const startCol = 2 + diff(d(x.i), dias[0].date);
-            const span = diff(d(x.p), d(x.i)) + 1;
+            const temData = Boolean(x.i && x.p);
+            const startCol = temData ? 2 + diff(d(x.i), dias[0].date) : 2;
+            const span = temData ? diff(d(x.p), d(x.i)) + 1 : dias.length;
             return (
               <div key={x.id} className="contents">
                 <div
@@ -198,11 +199,21 @@ export function CronogramaTab({ acoes }: CronogramaTabProps) {
                     className={`border-b border-l border-dashed border-border ${cellTint(day)}`}
                   />
                 ))}
-                <div
-                  className={`z-[1] my-2.5 h-[18px] self-center rounded-[3px] ${barClass(x)}`}
-                  style={{ gridColumnStart: startCol, gridColumnEnd: `span ${span}`, gridRow: linha.row, marginInline: 3 }}
-                  title={`${x.a} · ${x.sit}`}
-                />
+                {temData ? (
+                  <div
+                    className={`z-[1] my-2.5 h-[18px] self-center rounded-[3px] ${barClass(x)}`}
+                    style={{ gridColumnStart: startCol, gridColumnEnd: `span ${span}`, gridRow: linha.row, marginInline: 3 }}
+                    title={`${x.a} · ${x.sit}`}
+                  />
+                ) : (
+                  <div
+                    className="z-[1] my-2.5 flex h-[18px] items-center self-center truncate rounded-[3px] border border-dashed border-muted-foreground/40 px-2 text-[10px] text-muted-foreground"
+                    style={{ gridColumnStart: startCol, gridColumnEnd: `span ${Math.min(span, 6)}`, gridRow: linha.row, marginInline: 3 }}
+                    title="Sem data definida"
+                  >
+                    Sem data definida
+                  </div>
+                )}
               </div>
             );
           })}
