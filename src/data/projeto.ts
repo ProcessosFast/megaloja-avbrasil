@@ -43,7 +43,7 @@ export const ACOES: Acao[] = [
   { id: "a06", f: "Transporte", a: "Alugar 1 empilhadeira para o novo galpão", i: "2026-09-28", p: "2026-10-02", r: "", s: "Não iniciado", o: "Entrega no dia 15/10. Atenção ao feriado de 12/10" },
   { id: "a07", f: "Fiscal", a: "Alinhar notas fiscais de transferência com o fiscal/contábil", i: "2026-09-28", p: "2026-10-02", r: "", s: "Não iniciado", o: "Uma nota por carga" },
   { id: "a08", f: "Estrutural", a: "Executar manutenção do telhado", i: "2026-10-05", p: "2026-10-07", r: "", s: "Não iniciado", o: "" },
-  { id: "a09", f: "Estrutural", a: "Executar intervenção na viga (se liberada)", i: "2026-10-05", p: "2026-10-07", r: "", s: "Não iniciado", o: "Somente com laudo aprovado. Se não liberar, usar layout sem remoção", dec: "viga" },
+  { id: "a09", f: "Estrutural", a: "Retirar viga, elevar piso em 50cm e construir rampas de acesso e saída", i: "2026-10-05", p: "2026-10-07", r: "", s: "Não iniciado", o: "Rampa de subida e rampa de descida (desnível de 50cm) para dar altura suficiente à carreta passar. Somente com laudo aprovado.", dec: "viga" },
   { id: "a10", f: "Estrutural", a: "Retirar andaime", i: "2026-10-08", p: "2026-10-08", r: "", s: "Não iniciado", o: "" },
   { id: "a11", f: "Layout", a: "Montar almoxarifado", i: "2026-10-08", p: "2026-10-14", r: "", s: "Não iniciado", o: "" },
   { id: "a12", f: "Layout", a: "Marcar layout no piso do novo galpão (se possível)", i: "2026-10-13", p: "2026-10-14", r: "", s: "Não iniciado", o: "12/10 é feriado" },
@@ -63,6 +63,7 @@ export const ACOES: Acao[] = [
   { id: "a26", f: "Diversos", a: "Josiel elétrica", i: "", p: "", r: "Josiel", s: "Não iniciado", o: "" },
   { id: "a27", f: "Diversos", a: "Internet", i: "", p: "", r: "Plínio", s: "Não iniciado", o: "" },
   { id: "a28", f: "Diversos", a: "Contrato Diego Laranjeiras", i: "", p: "", r: "Diego Laranjeiras", s: "Não iniciado", o: "Diego Laranjeiras vai retornar hoje sobre o contrato." },
+  { id: "a29", f: "Diversos", a: "Início da limpeza do local", i: "", p: "", r: "", s: "Não iniciado", o: "" },
 ];
 
 export interface Decisao {
@@ -76,6 +77,9 @@ export interface Decisao {
   impacto: string;
   acoes: string[];
   img?: string;
+  // Estado já conhecido de início (quando a decisão já foi tomada antes de alguém clicar no site).
+  estadoInicial?: string;
+  dataInicial?: string;
 }
 
 // O primeiro item de "opcoes" é o estado pendente; "negativas" pintam de vermelho.
@@ -87,9 +91,12 @@ export const DECISOES: Decisao[] = [
     prazo: "2026-10-02",
     opcoes: ["Aguardando avaliação", "Liberada", "Não liberada"],
     negativas: [],
-    descricao: "Avaliar se a viga pode sofrer intervenção. Nenhuma intervenção acontece sem laudo e ART.",
+    descricao:
+      "Avaliar se a viga pode sofrer intervenção. Nenhuma intervenção acontece sem laudo e ART. Solução definida: a viga pode ser retirada; o piso sobe 50cm, com uma rampa de acesso e outra de saída (desnível de 50cm) para dar altura suficiente à carreta passar.",
     impacto: "Define se a intervenção de 05 a 07/10 acontece e qual versão de layout será usada. Se não liberar, segue o layout sem remoção.",
     acoes: ["a01", "a09"],
+    estadoInicial: "Liberada",
+    dataInicial: "2026-10-01",
   },
   {
     id: "layout",

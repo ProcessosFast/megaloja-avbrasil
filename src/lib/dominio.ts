@@ -56,7 +56,11 @@ export interface DecisaoAtual extends Decisao {
 
 export function decisaoAtual(x: Decisao, estDecisoes: EstadoDecisoes): DecisaoAtual {
   const o = estDecisoes[x.id] || {};
-  return { ...x, status: o.status || x.opcoes[0], data: o.data || "" };
+  return {
+    ...x,
+    status: o.status || x.estadoInicial || x.opcoes[0],
+    data: o.data || (x.estadoInicial ? x.dataInicial || "" : ""),
+  };
 }
 
 export function decPendente(x: Decisao, estDecisoes: EstadoDecisoes): boolean {

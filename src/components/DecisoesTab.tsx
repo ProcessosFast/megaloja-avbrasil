@@ -21,6 +21,14 @@ import type { DecisaoCustom, EstadoDecisoes, EstadoDecisoesCustom } from "@/lib/
 const OPCOES_CUSTOM = ["Aguardando decisão", "Aprovada", "Reprovada"];
 const NEGATIVAS_CUSTOM = ["Reprovada"];
 
+// x.data pode ser "YYYY-MM-DD" (data sem hora, ex.: dataInicial) ou um timestamp ISO completo
+// (quando alguém registra a decisão pelo site). new Date("YYYY-MM-DD") interpreta como UTC
+// meia-noite, o que pode exibir o dia errado em fusos atrás de UTC — por isso o tratamento à parte.
+function formatarDataDecidida(data: string): string {
+  if (!data.includes("T")) return fmt(data);
+  return new Date(data).toLocaleDateString("pt-BR");
+}
+
 interface DecisaoView {
   id: string;
   titulo: string;
@@ -204,7 +212,7 @@ function DecisaoCard({
           {x.data && (
             <>
               <dt className="text-muted-foreground">Decidido em</dt>
-              <dd>{new Date(x.data).toLocaleDateString("pt-BR")}</dd>
+              <dd>{formatarDataDecidida(x.data)}</dd>
             </>
           )}
           <dt className="text-muted-foreground">Impacto</dt>
