@@ -57,13 +57,12 @@ export const ACOES: Acao[] = [
   { id: "a20", f: "Diversos", a: "2 equipes permuta", i: "", p: "", r: "", s: "Não iniciado", o: "" },
   { id: "a21", f: "Diversos", a: "Frente final galpão", i: "", p: "", r: "", s: "Não iniciado", o: "" },
   { id: "a22", f: "Diversos", a: "E-mail Ramos e Realengo", i: "", p: "", r: "Ramos e Realengo", s: "Não iniciado", o: "" },
-  { id: "a23", f: "Diversos", a: "Limpeza do galpão com 10 faxineiros", i: "", p: "", r: "", s: "Não iniciado", o: "" },
   { id: "a24", f: "Diversos", a: "Blindex frente loja", i: "", p: "", r: "", s: "Não iniciado", o: "" },
   { id: "a25", f: "Diversos", a: "Ar condicionado da operação", i: "", p: "", r: "", s: "Não iniciado", o: "" },
   { id: "a26", f: "Diversos", a: "Josiel elétrica", i: "", p: "", r: "Josiel", s: "Não iniciado", o: "" },
   { id: "a27", f: "Diversos", a: "Internet", i: "", p: "", r: "Plínio", s: "Não iniciado", o: "" },
   { id: "a28", f: "Diversos", a: "Contrato Diego Laranjeiras", i: "", p: "", r: "Diego Laranjeiras", s: "Não iniciado", o: "Diego Laranjeiras vai retornar hoje sobre o contrato." },
-  { id: "a29", f: "Diversos", a: "Limpeza do local", i: "2026-10-05", p: "2026-10-13", r: "", s: "Não iniciado", o: "Limpeza pronta até 13/10" },
+  { id: "a29", f: "Diversos", a: "Limpeza do galpão com 10 faxineiros", i: "2026-10-05", p: "2026-10-13", r: "", s: "Não iniciado", o: "Limpeza pronta até 13/10" },
   { id: "a30", f: "Diversos", a: "Mudança de Realengo e Ramos", i: "2026-10-26", p: "2026-10-26", r: "Ramos e Realengo", s: "Não iniciado", o: "Realengo e Ramos precisam se mudar até 26/10" },
 ];
 
