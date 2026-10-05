@@ -51,7 +51,7 @@ export const ACOES: Acao[] = [
   { id: "a14", f: "Fiscal", a: "Confirmar emissão das notas", i: "2026-10-15", p: "2026-10-15", r: "", s: "Não iniciado", o: "" },
   { id: "a15", f: "Transporte", a: "Receber empilhadeira alugada no novo galpão", i: "2026-10-15", p: "2026-10-15", r: "", s: "Não iniciado", o: "" },
   { id: "a16", f: "Transporte", a: "Confirmar horários de chegada escalonados dos veículos", i: "2026-10-15", p: "2026-10-15", r: "", s: "Não iniciado", o: "Evitar fila na doca" },
-  { id: "a17", f: "Estoque", a: "Mudança", i: "2026-10-16", p: "2026-10-16", r: "", s: "Não iniciado", o: "Ver aba Quadro de pessoal", marco: true },
+  { id: "a17", f: "Estoque", a: "Mudança da DCS · 16/10", i: "2026-10-16", p: "2026-10-16", r: "", s: "Não iniciado", o: "Ver aba Quadro de pessoal", marco: true },
   { id: "a18", f: "Estoque", a: "Contingência e conferência final", i: "2026-10-17", p: "2026-10-17", r: "", s: "Não iniciado", o: "Sábado reservado para atrasos" },
   // Pendências avulsas — sem data definida ainda (ver Cronograma: aparecem como "Sem data definida").
   { id: "a20", f: "Diversos", a: "2 equipes permuta", i: "", p: "", r: "", s: "Não iniciado", o: "" },
