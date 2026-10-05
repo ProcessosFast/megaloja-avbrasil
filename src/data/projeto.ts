@@ -10,10 +10,10 @@ export interface Projeto {
 }
 
 export const PROJETO: Projeto = {
-  atualizadoEm: "2026-09-30",
+  atualizadoEm: "2026-10-05",
   mudanca: "2026-10-16",
   inicio: "2026-09-28",
-  fim: "2026-10-17",
+  fim: "2026-10-26",
   feriados: ["2026-10-12"],
 };
 
@@ -64,6 +64,7 @@ export const ACOES: Acao[] = [
   { id: "a27", f: "Diversos", a: "Internet", i: "", p: "", r: "Plínio", s: "Não iniciado", o: "" },
   { id: "a28", f: "Diversos", a: "Contrato Diego Laranjeiras", i: "", p: "", r: "Diego Laranjeiras", s: "Não iniciado", o: "Diego Laranjeiras vai retornar hoje sobre o contrato." },
   { id: "a29", f: "Diversos", a: "Início da limpeza do local", i: "", p: "", r: "", s: "Não iniciado", o: "" },
+  { id: "a30", f: "Diversos", a: "Mudança de Realengo e Ramos", i: "2026-10-26", p: "2026-10-26", r: "Ramos e Realengo", s: "Não iniciado", o: "Realengo e Ramos precisam se mudar até 26/10" },
 ];
 
 export interface Decisao {
