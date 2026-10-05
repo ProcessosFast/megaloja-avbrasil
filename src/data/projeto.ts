@@ -45,6 +45,7 @@ export const ACOES: Acao[] = [
   { id: "a06", f: "Transporte", a: "Alugar 1 empilhadeira para o novo galpão", i: "2026-09-28", p: "2026-10-02", r: "", s: "Não iniciado", o: "Entrega no dia 15/10. Atenção ao feriado de 12/10" },
   { id: "a07", f: "Fiscal", a: "Alinhar notas fiscais de transferência com o fiscal/contábil", i: "2026-09-28", p: "2026-10-02", r: "", s: "Não iniciado", o: "Uma nota por carga" },
   { id: "a08", f: "Estrutural", a: "Executar manutenção do telhado", i: "2026-10-05", p: "2026-10-13", r: "", s: "Não iniciado", o: "Estrutura pronta até 13/10" },
+  { id: "a31", f: "Estrutural", a: "Visita do Osias (pedreiro) para ver a manutenção do telhado", i: "2026-10-07", p: "2026-10-07", r: "Osias", s: "Não iniciado", o: "" },
   { id: "a09", f: "Estrutural", a: "Retirar viga, elevar piso em 50cm e construir rampas de acesso e saída", i: "2026-10-05", p: "2026-10-07", r: "", s: "Suspenso temporariamente", o: "SUSPENSA TEMPORARIAMENTE — ficará para depois. Rampa de subida e rampa de descida (desnível de 50cm) para dar altura suficiente à carreta passar. Somente com laudo aprovado.", dec: "viga" },
   { id: "a10", f: "Estrutural", a: "Retirar andaime", i: "2026-10-13", p: "2026-10-13", r: "", s: "Não iniciado", o: "" },
   { id: "a11", f: "Layout", a: "Montar almoxarifado", i: "2026-10-08", p: "2026-10-14", r: "", s: "Não iniciado", o: "" },
