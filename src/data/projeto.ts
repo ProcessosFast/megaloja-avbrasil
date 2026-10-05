@@ -57,7 +57,7 @@ export const ACOES: Acao[] = [
   { id: "a20", f: "Diversos", a: "2 equipes permuta", i: "", p: "", r: "", s: "Não iniciado", o: "" },
   { id: "a21", f: "Diversos", a: "Frente final galpão", i: "", p: "", r: "", s: "Não iniciado", o: "" },
   { id: "a22", f: "Diversos", a: "E-mail Ramos e Realengo", i: "", p: "", r: "Ramos e Realengo", s: "Não iniciado", o: "" },
-  { id: "a23", f: "Diversos", a: "10 faxineiros", i: "", p: "", r: "", s: "Não iniciado", o: "" },
+  { id: "a23", f: "Diversos", a: "Limpeza do galpão com 10 faxineiros", i: "", p: "", r: "", s: "Não iniciado", o: "" },
   { id: "a24", f: "Diversos", a: "Blindex frente loja", i: "", p: "", r: "", s: "Não iniciado", o: "" },
   { id: "a25", f: "Diversos", a: "Ar condicionado da operação", i: "", p: "", r: "", s: "Não iniciado", o: "" },
   { id: "a26", f: "Diversos", a: "Josiel elétrica", i: "", p: "", r: "Josiel", s: "Não iniciado", o: "" },
