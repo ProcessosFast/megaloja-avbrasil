@@ -15,6 +15,7 @@ import { DECISOES, PROJETO } from "@/data/projeto";
 import { acoesAtuais, decisoesPendentesCount } from "@/lib/dominio";
 import type { DecisaoCustom } from "@/lib/storage";
 import { useEstado } from "@/lib/storage";
+import { abrirRelatorio } from "@/lib/relatorio";
 
 const OPCAO_PENDENTE_CUSTOM = "Aguardando decisão";
 
@@ -70,6 +71,11 @@ export default function App() {
     toast.success("Ponto de decisão adicionado");
   }
 
+  function handleExportar() {
+    const ok = abrirRelatorio({ acoes, estadoDecisoes: estado.decisoes, decisoesCustom: estado.decisoesCustom });
+    if (!ok) toast.error("O navegador bloqueou a nova aba. Libere pop-ups para este site e tente de novo.");
+  }
+
   function handleExcluirDecisao(id: string) {
     remover("decisoesCustom", id);
     toast.success("Ponto de decisão removido");
@@ -77,7 +83,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header atualizadoLabel={atualizadoLabel} />
+      <Header atualizadoLabel={atualizadoLabel} onExportar={handleExportar} />
       <Hero />
 
       <main className="w-full px-4 pb-16 sm:px-6 lg:px-10">

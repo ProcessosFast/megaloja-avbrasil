@@ -1,8 +1,12 @@
+import { FileDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
 interface HeaderProps {
   atualizadoLabel: string;
+  onExportar: () => void;
 }
 
-export function Header({ atualizadoLabel }: HeaderProps) {
+export function Header({ atualizadoLabel, onExportar }: HeaderProps) {
   return (
     <header className="border-b border-border bg-background">
       <div className="flex w-full flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-6 lg:px-10">
@@ -47,7 +51,13 @@ export function Header({ atualizadoLabel }: HeaderProps) {
             Projeto de implantação
           </span>
         </div>
-        <div className="text-sm text-muted-foreground">{atualizadoLabel}</div>
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="text-sm text-muted-foreground">{atualizadoLabel}</div>
+          <Button variant="outline" onClick={onExportar}>
+            <FileDown />
+            Exportar relatório
+          </Button>
+        </div>
       </div>
     </header>
   );
