@@ -156,6 +156,7 @@ function DecisaoCard({
 }) {
   const pend = x.status === x.opcoes[0];
   const negativa = !pend && x.negativas.includes(x.status);
+  const suspensa = x.status.startsWith("Suspens");
   const vencido = pend && x.prazo && diff(d(x.prazo), hoje) < 0;
 
   return (
@@ -175,7 +176,9 @@ function DecisaoCard({
             className={
               pend
                 ? "bg-secondary text-secondary-foreground"
-                : negativa
+                : suspensa
+                  ? "bg-status-warn-soft text-status-warn"
+                  : negativa
                   ? "bg-status-late-soft text-destructive"
                   : "bg-status-ok-soft text-status-ok"
             }

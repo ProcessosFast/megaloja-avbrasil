@@ -17,7 +17,7 @@ export const PROJETO: Projeto = {
   feriados: ["2026-10-12"],
 };
 
-export const STATUS = ["Não iniciado", "Em andamento", "Concluído"] as const;
+export const STATUS = ["Não iniciado", "Em andamento", "Concluído", "Suspenso temporariamente"] as const;
 export type Status = (typeof STATUS)[number];
 
 export interface Acao {
@@ -35,16 +35,16 @@ export interface Acao {
 
 export const ACOES: Acao[] = [
   { id: "a19", f: "Contratual", a: "Assinar contrato de locação do galpão da MEGA LOJA AV BRASIL", i: "2026-10-01", p: "2026-10-01", r: "", s: "Não iniciado", o: "Prazo de assinatura 01/10" },
-  { id: "a01", f: "Estrutural", a: "Alinhar com o time interno de engenharia a avaliação da viga", i: "2026-09-28", p: "2026-10-02", r: "", s: "Não iniciado", o: "Laudo e ART antes de qualquer intervenção. Resultado vai para a aba Decisões", dec: "viga" },
+  { id: "a01", f: "Estrutural", a: "Alinhar com o time interno de engenharia a avaliação da viga", i: "2026-09-28", p: "2026-10-02", r: "", s: "Suspenso temporariamente", o: "SUSPENSA TEMPORARIAMENTE — a parte da viga ficará para depois. Laudo e ART antes de qualquer intervenção", dec: "viga" },
   { id: "a02", f: "Estrutural", a: "Contratar manutenção do telhado (retirada de goteiras)", i: "2026-09-28", p: "2026-10-02", r: "", s: "Não iniciado", o: "Exigir equipe em conformidade com a NR-35" },
   { id: "a03", f: "Estrutural", a: "Alugar andaime", i: "2026-09-28", p: "2026-10-02", r: "", s: "Não iniciado", o: "Entrega até 05/10" },
   { id: "a04", f: "Layout", a: "Definir layout em duas versões (com e sem remoção da viga)", i: "2026-09-28", p: "2026-10-02", r: "", s: "Não iniciado", o: "Curva A perto da expedição. Versão final depende da decisão da viga", dec: "layout" },
   { id: "a05", f: "Transporte", a: "Reservar 2 carretas e 2 trucks para 16/10", i: "2026-09-28", p: "2026-10-02", r: "", s: "Não iniciado", o: "Caminhão fechado ou sider para as placas" },
   { id: "a06", f: "Transporte", a: "Alugar 1 empilhadeira para o novo galpão", i: "2026-09-28", p: "2026-10-02", r: "", s: "Não iniciado", o: "Entrega no dia 15/10. Atenção ao feriado de 12/10" },
   { id: "a07", f: "Fiscal", a: "Alinhar notas fiscais de transferência com o fiscal/contábil", i: "2026-09-28", p: "2026-10-02", r: "", s: "Não iniciado", o: "Uma nota por carga" },
-  { id: "a08", f: "Estrutural", a: "Executar manutenção do telhado", i: "2026-10-05", p: "2026-10-07", r: "", s: "Não iniciado", o: "" },
-  { id: "a09", f: "Estrutural", a: "Retirar viga, elevar piso em 50cm e construir rampas de acesso e saída", i: "2026-10-05", p: "2026-10-07", r: "", s: "Não iniciado", o: "Rampa de subida e rampa de descida (desnível de 50cm) para dar altura suficiente à carreta passar. Somente com laudo aprovado.", dec: "viga" },
-  { id: "a10", f: "Estrutural", a: "Retirar andaime", i: "2026-10-08", p: "2026-10-08", r: "", s: "Não iniciado", o: "" },
+  { id: "a08", f: "Estrutural", a: "Executar manutenção do telhado", i: "2026-10-05", p: "2026-10-13", r: "", s: "Não iniciado", o: "Estrutura pronta até 13/10" },
+  { id: "a09", f: "Estrutural", a: "Retirar viga, elevar piso em 50cm e construir rampas de acesso e saída", i: "2026-10-05", p: "2026-10-07", r: "", s: "Suspenso temporariamente", o: "SUSPENSA TEMPORARIAMENTE — ficará para depois. Rampa de subida e rampa de descida (desnível de 50cm) para dar altura suficiente à carreta passar. Somente com laudo aprovado.", dec: "viga" },
+  { id: "a10", f: "Estrutural", a: "Retirar andaime", i: "2026-10-13", p: "2026-10-13", r: "", s: "Não iniciado", o: "" },
   { id: "a11", f: "Layout", a: "Montar almoxarifado", i: "2026-10-08", p: "2026-10-14", r: "", s: "Não iniciado", o: "" },
   { id: "a12", f: "Layout", a: "Marcar layout no piso do novo galpão (se possível)", i: "2026-10-13", p: "2026-10-14", r: "", s: "Não iniciado", o: "12/10 é feriado" },
   { id: "a13", f: "Estoque", a: "Pré-montar paletes no almoxarifado em Japeri", i: "2026-10-13", p: "2026-10-14", r: "", s: "Não iniciado", o: "" },
@@ -63,7 +63,7 @@ export const ACOES: Acao[] = [
   { id: "a26", f: "Diversos", a: "Josiel elétrica", i: "", p: "", r: "Josiel", s: "Não iniciado", o: "" },
   { id: "a27", f: "Diversos", a: "Internet", i: "", p: "", r: "Plínio", s: "Não iniciado", o: "" },
   { id: "a28", f: "Diversos", a: "Contrato Diego Laranjeiras", i: "", p: "", r: "Diego Laranjeiras", s: "Não iniciado", o: "Diego Laranjeiras vai retornar hoje sobre o contrato." },
-  { id: "a29", f: "Diversos", a: "Início da limpeza do local", i: "", p: "", r: "", s: "Não iniciado", o: "" },
+  { id: "a29", f: "Diversos", a: "Limpeza do local", i: "2026-10-05", p: "2026-10-13", r: "", s: "Não iniciado", o: "Limpeza pronta até 13/10" },
   { id: "a30", f: "Diversos", a: "Mudança de Realengo e Ramos", i: "2026-10-26", p: "2026-10-26", r: "Ramos e Realengo", s: "Não iniciado", o: "Realengo e Ramos precisam se mudar até 26/10" },
 ];
 
@@ -90,14 +90,14 @@ export const DECISOES: Decisao[] = [
     titulo: "Liberação da intervenção na viga",
     aprovador: "Time interno de engenharia (laudo e ART)",
     prazo: "2026-10-02",
-    opcoes: ["Aguardando avaliação", "Liberada", "Não liberada"],
+    opcoes: ["Aguardando avaliação", "Liberada", "Não liberada", "Suspensa temporariamente"],
     negativas: [],
     descricao:
       "Avaliar se a viga pode sofrer intervenção. Nenhuma intervenção acontece sem laudo e ART. Solução definida: a viga pode ser retirada; o piso sobe 50cm, com uma rampa de acesso e outra de saída (desnível de 50cm) para dar altura suficiente à carreta passar.",
-    impacto: "Define se a intervenção de 05 a 07/10 acontece e qual versão de layout será usada. Se não liberar, segue o layout sem remoção.",
+    impacto: "SUSPENSA TEMPORARIAMENTE: a parte da viga ficará para depois. Define se a intervenção acontece e qual versão de layout será usada. Se não liberar, segue o layout sem remoção.",
     acoes: ["a01", "a09"],
-    estadoInicial: "Liberada",
-    dataInicial: "2026-10-01",
+    estadoInicial: "Suspensa temporariamente",
+    dataInicial: "2026-10-05",
   },
   {
     id: "layout",
