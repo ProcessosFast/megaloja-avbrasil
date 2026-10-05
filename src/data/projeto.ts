@@ -4,6 +4,7 @@
 export interface Projeto {
   atualizadoEm: string;
   mudanca: string;
+  mudancaLojas: string;
   inicio: string;
   fim: string;
   feriados: string[];
@@ -12,6 +13,7 @@ export interface Projeto {
 export const PROJETO: Projeto = {
   atualizadoEm: "2026-10-05",
   mudanca: "2026-10-16",
+  mudancaLojas: "2026-10-26",
   inicio: "2026-09-28",
   fim: "2026-10-26",
   feriados: ["2026-10-12"],

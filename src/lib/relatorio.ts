@@ -35,9 +35,12 @@ interface DadosRelatorio {
 
 export function montarRelatorio({ acoes, estadoDecisoes, decisoesCustom }: DadosRelatorio): string {
   const emissao = new Date();
-  const falta = diff(d(PROJETO.mudanca), hoje);
-  const contagem =
-    falta > 0 ? `${falta} dias para a mudança` : falta === 0 ? "Mudança é hoje" : `${-falta} dias após a mudança`;
+  const contar = (data: string, nome: string) => {
+    const falta = diff(d(data), hoje);
+    return falta > 0 ? `${falta} dias para a ${nome}` : falta === 0 ? `${nome} é hoje` : `${-falta} dias após a ${nome}`;
+  };
+  const contagem = contar(PROJETO.mudanca, "Mudança DCS");
+  const contagemLojas = contar(PROJETO.mudancaLojas, "Mudança lojas Ramos e Realengo");
 
   const ativas = acoes.filter((x) => x.sit !== "Suspensa");
   const conc = acoes.filter((x) => x.s === "Concluído").length;
@@ -189,10 +192,11 @@ export function montarRelatorio({ acoes, estadoDecisoes, decisoesCustom }: Dados
     <div>
       <div class="marca">Fast Sistemas Construtivos · Projeto de implantação</div>
       <h1>Relatório de status · MEGA LOJA AV BRASIL</h1>
-      <div class="muted">Mudança da DCS programada para ${fmt(PROJETO.mudanca)} · período ${fmt(PROJETO.inicio)} a ${fmt(PROJETO.fim)}</div>
+      <div class="muted">Mudança da DCS em ${fmt(PROJETO.mudanca)} · Mudança das lojas Ramos e Realengo até ${fmt(PROJETO.mudancaLojas)} · período ${fmt(PROJETO.inicio)} a ${fmt(PROJETO.fim)}</div>
     </div>
     <div class="meta">
       <strong>${contagem}</strong>
+      <strong>${contagemLojas}</strong>
       Emitido em ${emissao.toLocaleDateString("pt-BR")} às ${emissao.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
     </div>
   </header>
