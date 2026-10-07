@@ -46,7 +46,7 @@ export const ACOES: Acao[] = [
   { id: "a07", f: "Fiscal", a: "Alinhar notas fiscais de transferência com o fiscal/contábil", i: "2026-09-28", p: "2026-10-02", r: "", s: "Não iniciado", o: "Uma nota por carga" },
   { id: "a08", f: "Estrutural", a: "Executar manutenção do telhado", i: "2026-10-05", p: "2026-10-13", r: "", s: "Não iniciado", o: "Estrutura pronta até 13/10" },
   { id: "a31", f: "Estrutural", a: "Visita do Osias (pedreiro) para ver a manutenção do telhado", i: "2026-10-07", p: "2026-10-07", r: "Osias", s: "Não iniciado", o: "" },
-  { id: "a09", f: "Estrutural", a: "Retirar viga, elevar piso em 50cm e construir rampas de acesso e saída", i: "2026-10-05", p: "2026-10-07", r: "", s: "Suspenso temporariamente", o: "SUSPENSA TEMPORARIAMENTE — ficará para depois. Rampa de subida e rampa de descida (desnível de 50cm) para dar altura suficiente à carreta passar. Somente com laudo aprovado.", dec: "viga" },
+  { id: "a09", f: "Estrutural", a: "Retirar viga, elevar piso em 50cm e construir rampas de acesso e saída", i: "2026-10-05", p: "2026-10-07", r: "", s: "Suspenso temporariamente", o: "SUSPENSA TEMPORARIAMENTE — depende do laudo pericial do Glauco. Rampa de subida e rampa de descida (desnível de 50cm) para dar altura suficiente à carreta passar. Somente com laudo aprovado.", dec: "viga" },
   { id: "a10", f: "Estrutural", a: "Retirar andaime", i: "2026-10-13", p: "2026-10-13", r: "", s: "Não iniciado", o: "" },
   { id: "a11", f: "Layout", a: "Montar almoxarifado", i: "2026-10-08", p: "2026-10-14", r: "", s: "Não iniciado", o: "" },
   { id: "a12", f: "Layout", a: "Marcar layout no piso do novo galpão (se possível)", i: "2026-10-13", p: "2026-10-14", r: "", s: "Não iniciado", o: "12/10 é feriado" },
@@ -67,6 +67,13 @@ export const ACOES: Acao[] = [
   { id: "a28", f: "Diversos", a: "Contrato Diego Laranjeiras", i: "", p: "", r: "Diego Laranjeiras", s: "Não iniciado", o: "Diego Laranjeiras vai retornar hoje sobre o contrato." },
   { id: "a29", f: "Diversos", a: "Limpeza do galpão com 10 faxineiros", i: "2026-10-05", p: "2026-10-13", r: "", s: "Não iniciado", o: "Limpeza pronta até 13/10" },
   { id: "a30", f: "Diversos", a: "Mudança de Realengo e Ramos", i: "2026-10-26", p: "2026-10-26", r: "Ramos e Realengo", s: "Não iniciado", o: "Realengo e Ramos precisam se mudar até 26/10" },
+  { id: "a32", f: "Estrutural", a: "Laudo pericial do Glauco · viga", i: "", p: "", r: "Glauco", s: "Não iniciado", o: "A retirada da viga está suspensa dependendo deste laudo", dec: "viga" },
+  { id: "a33", f: "Diversos", a: "Limpeza e teste de todos os A.C.", i: "", p: "", r: "", s: "Não iniciado", o: "" },
+  { id: "a34", f: "Diversos", a: "Chaves e portas abertas", i: "", p: "", r: "", s: "Não iniciado", o: "" },
+  { id: "a35", f: "Diversos", a: "Teste de todas as instalações elétricas", i: "", p: "", r: "", s: "Não iniciado", o: "" },
+  { id: "a36", f: "Diversos", a: "Organizar todas as chaves", i: "", p: "", r: "", s: "Não iniciado", o: "" },
+  { id: "a37", f: "Diversos", a: "Criar cópias das chaves e identificá-las", i: "", p: "", r: "", s: "Não iniciado", o: "" },
+  { id: "a38", f: "Diversos", a: "Montar um claviculário", i: "", p: "", r: "", s: "Não iniciado", o: "" },
 ];
 
 export interface Decisao {
@@ -96,8 +103,8 @@ export const DECISOES: Decisao[] = [
     negativas: [],
     descricao:
       "Avaliar se a viga pode sofrer intervenção. Nenhuma intervenção acontece sem laudo e ART. Solução definida: a viga pode ser retirada; o piso sobe 50cm, com uma rampa de acesso e outra de saída (desnível de 50cm) para dar altura suficiente à carreta passar.",
-    impacto: "SUSPENSA TEMPORARIAMENTE: a parte da viga ficará para depois. Define se a intervenção acontece e qual versão de layout será usada. Se não liberar, segue o layout sem remoção.",
-    acoes: ["a01", "a09"],
+    impacto: "SUSPENSA TEMPORARIAMENTE: a retirada da viga depende do laudo pericial do Glauco. Define se a intervenção acontece e qual versão de layout será usada. Se não liberar, segue o layout sem remoção.",
+    acoes: ["a01", "a32", "a09"],
     estadoInicial: "Suspensa temporariamente",
     dataInicial: "2026-10-05",
   },
