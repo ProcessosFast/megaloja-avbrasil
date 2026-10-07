@@ -33,9 +33,11 @@ export function PlanoTab({ acoes, podeEditar, onUpdate }: PlanoTabProps) {
   const [pFrente, setPFrente] = useState("");
   const [pSit, setPSit] = useState("");
 
-  const filtradas = acoes.filter(
-    (x) => (!pFrente || x.f === pFrente) && (!pSit || x.sit === pSit),
-  );
+  // Pendências de máxima atenção ainda abertas sobem para o topo.
+  const urgente = (x: AcaoComEstado) => (x.critico && x.s !== "Concluído" ? 0 : 1);
+  const filtradas = acoes
+    .filter((x) => (!pFrente || x.f === pFrente) && (!pSit || x.sit === pSit))
+    .sort((a, b) => urgente(a) - urgente(b));
   const feitas = acoes.filter((x) => x.s === "Concluído").length;
 
   return (
@@ -94,7 +96,7 @@ export function PlanoTab({ acoes, podeEditar, onUpdate }: PlanoTabProps) {
           </TableHeader>
           <TableBody>
             {filtradas.map((x) => (
-              <TableRow key={x.id}>
+              <TableRow key={x.id} className={x.critico && x.s !== "Concluído" ? "bg-destructive/5" : undefined}>
                 <TableCell>
                   <input
                     type="checkbox"
@@ -108,6 +110,9 @@ export function PlanoTab({ acoes, podeEditar, onUpdate }: PlanoTabProps) {
                 <TableCell className="max-w-xs whitespace-normal">
                   {x.a}
                   {x.marco && <Badge className="ml-2 bg-primary text-primary-foreground">Marco</Badge>}
+                  {x.critico && x.s !== "Concluído" && (
+                    <Badge className="ml-2 bg-destructive text-white">Pendente · Máxima atenção</Badge>
+                  )}
                 </TableCell>
                 <TableCell>{fmt(x.i)}</TableCell>
                 <TableCell>

@@ -194,6 +194,9 @@ export function CronogramaTab({ acoes }: CronogramaTabProps) {
                   style={{ gridColumn: 1, gridRow: linha.row }}
                   title={x.a}
                 >
+                  {x.critico && x.s !== "Concluído" && (
+                    <span className="text-[10px] font-bold uppercase tracking-wide text-destructive">Máxima atenção</span>
+                  )}
                   <span className="truncate">{x.a}</span>
                   {x.r && <span className="hidden truncate text-[11px] text-muted-foreground sm:block">{x.r}</span>}
                 </div>

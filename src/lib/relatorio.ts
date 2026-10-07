@@ -62,6 +62,8 @@ export function montarRelatorio({ acoes, estadoDecisoes, decisoesCustom }: Dados
   const decisoes = [...decBase, ...decCustom];
   const decPend = decisoes.filter((x) => x.pend).length;
 
+  const criticas = acoes.filter((x) => x.critico && x.s !== "Concluído");
+
   const prox = acoes
     .filter((x) => x.s !== "Concluído" && x.sit !== "Suspensa" && x.sit !== "Cancelada" && x.p && diff(d(x.p), hoje) >= 0 && diff(d(x.p), hoje) <= 7)
     .sort((a, b) => d(a.p).getTime() - d(b.p).getTime());
@@ -78,7 +80,7 @@ export function montarRelatorio({ acoes, estadoDecisoes, decisoesCustom }: Dados
 
   const linhaAcao = (x: AcaoComEstado) => `
     <tr>
-      <td>${esc(x.a)}${x.marco ? ' <strong class="marco">MARCO</strong>' : ""}</td>
+      <td>${esc(x.a)}${x.marco ? ' <strong class="marco">MARCO</strong>' : ""}${x.critico && x.s !== "Concluído" ? ' <strong class="marco">MÁXIMA ATENÇÃO</strong>' : ""}</td>
       <td class="c">${fmt(x.i)}</td>
       <td class="c">${fmt(x.p)}</td>
       <td>${esc(x.r || "—")}</td>
@@ -177,6 +179,9 @@ export function montarRelatorio({ acoes, estadoDecisoes, decisoesCustom }: Dados
   .tag.neutro { background: #eee; color: #444; }
   .tag.susp { background: #eee; color: #555; border: 1px dashed #888; }
   .marco { color: #C41E3A; font-size: 10px; }
+  .critico { border: 2px solid #b3121f; border-radius: 6px; padding: 8px 12px; background: #fff5f5; }
+  .critico ul { margin: 0; padding-left: 18px; }
+  .critico li { margin: 4px 0; }
   footer { margin-top: 24px; padding-top: 8px; border-top: 1px solid #ddd; color: #777; font-size: 10.5px; display: flex; justify-content: space-between; }
   @media print { .barra { display: none; } .pagina { padding: 0; max-width: none; } h2 { page-break-after: avoid; } }
   @media (max-width: 760px) { .kpis { grid-template-columns: repeat(2, 1fr); } .duas { grid-template-columns: 1fr; } table { font-size: 10px; } }
@@ -206,6 +211,15 @@ export function montarRelatorio({ acoes, estadoDecisoes, decisoesCustom }: Dados
   <div class="kpis">
     ${kpis.map(([l, v, c]) => `<div class="kpi ${c || ""}"><span>${l}</span><b>${v}</b></div>`).join("")}
   </div>
+
+  ${
+    criticas.length
+      ? `<h2>Pendentes · Máxima atenção</h2>
+  <div class="critico"><ul>${criticas
+    .map((x) => `<li><strong>${esc(x.a)}</strong> <span class="muted">· ${esc(x.s)}${x.p ? ` · prazo ${fmt(x.p)}` : " · sem prazo"}</span>${x.o ? `<div class="muted">${esc(x.o)}</div>` : ""}</li>`)
+    .join("")}</ul></div>`
+      : ""
+  }
 
   <h2>Pontos de atenção</h2>
   <div class="duas">

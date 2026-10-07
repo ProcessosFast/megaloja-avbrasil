@@ -35,6 +35,8 @@ export interface Acao {
   dec?: string;
   // Status definitivo: o que estiver salvo pelo site não sobrescreve.
   fixo?: boolean;
+  // Pendência crítica: destacada como "Máxima atenção" em todo o portal.
+  critico?: boolean;
 }
 
 export const ACOES: Acao[] = [
@@ -66,6 +68,12 @@ export const ACOES: Acao[] = [
   { id: "a29", f: "Diversos", a: "Limpeza do galpão com 10 faxineiros", i: "2026-10-05", p: "2026-10-13", r: "", s: "Em andamento", o: "Limpeza pronta até 13/10" },
   { id: "a30", f: "Diversos", a: "Mudança de Realengo e Ramos", i: "2026-10-26", p: "2026-10-26", r: "Ramos e Realengo", s: "Não iniciado", o: "Realengo e Ramos precisam se mudar até 26/10" },
   { id: "a39", f: "Diversos", a: "Mudança de Bonsucesso", i: "", p: "", r: "", s: "Não iniciado", o: "Sem data definida ainda" },
+  // Legalização do imóvel — pendências críticas, em sequência.
+  { id: "a40", f: "Legalização", a: "1) Pedido de viabilidade na Prefeitura", i: "", p: "", r: "", s: "Não iniciado", o: "", critico: true },
+  { id: "a41", f: "Legalização", a: "2) Avaliação da CET-RIO para imóvel acima de 6 mil m²", i: "", p: "", r: "", s: "Não iniciado", o: "Nota: algumas alterações podem ocorrer. A Casa do Montador, por exemplo, exige CET-RIO; outras não vão exigir certidão do Corpo de Bombeiros. Essas exigências podem variar.", critico: true },
+  { id: "a42", f: "Legalização", a: "3) Pagamento de taxa e liberação do Alvará de Funcionamento", i: "", p: "", r: "", s: "Não iniciado", o: "", critico: true },
+  { id: "a43", f: "Legalização", a: "4) Inscrição Municipal e pagamento da taxa de inscrição", i: "", p: "", r: "", s: "Não iniciado", o: "", critico: true },
+  { id: "a44", f: "Legalização", a: "5) Liberação no Estado para emissão de NF-e e NFC-e", i: "", p: "", r: "", s: "Não iniciado", o: "", critico: true },
   { id: "a32", f: "Estrutural", a: "Laudo pericial do Glauco · viga", i: "", p: "", r: "Glauco", s: "Não iniciado", o: "A retirada da viga está suspensa dependendo deste laudo", dec: "viga" },
   { id: "a33", f: "Diversos", a: "Limpeza e teste de todos os A.C.", i: "", p: "", r: "", s: "Não iniciado", o: "" },
   { id: "a34", f: "Diversos", a: "Chaves e portas abertas", i: "", p: "", r: "", s: "Não iniciado", o: "" },
@@ -180,4 +188,4 @@ export const ATENCAO: string[] = [
   "12/10 (segunda) é feriado: tudo que depende de terceiros precisa estar fechado até 09/10.",
 ];
 
-export const FRENTES = ["Contratual", "Estrutural", "Layout", "Transporte", "Fiscal", "Estoque", "Diversos"] as const;
+export const FRENTES = ["Legalização", "Contratual", "Estrutural", "Layout", "Transporte", "Fiscal", "Estoque", "Diversos"] as const;

@@ -33,6 +33,7 @@ export function DashboardTab({ acoes, decisoesPendentes }: DashboardTabProps) {
   const prox = acoes
     .filter((x) => x.s !== "Concluído" && x.sit !== "Suspensa" && x.sit !== "Cancelada" && diff(d(x.p), hoje) >= 0 && diff(d(x.p), hoje) <= 7)
     .sort((a, b) => d(a.p).getTime() - d(b.p).getTime());
+  const criticas = acoes.filter((x) => x.critico && x.s !== "Concluído");
   const lista = [...acoes.filter((x) => x.sit === "Atrasado"), ...prox];
 
   const kpis = [
@@ -57,6 +58,30 @@ export function DashboardTab({ acoes, decisoesPendentes }: DashboardTabProps) {
         ))}
       </div>
 
+      {criticas.length > 0 && (
+        <Card className="border-2 border-destructive">
+          <CardHeader>
+            <CardTitle className="text-lg text-destructive">Pendentes · Máxima atenção</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-2">
+              {criticas.map((x) => (
+                <li key={x.id} className="flex items-start justify-between gap-3 text-sm">
+                  <div className="min-w-0">
+                    <div className="font-medium">{x.a}</div>
+                    {x.o && <div className="text-xs text-muted-foreground">{x.o}</div>}
+                  </div>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <span className="text-muted-foreground">{x.p ? fmt(x.p) : "Sem prazo"}</span>
+                    <Badge className={SITUACAO_BADGE[x.sit]}>{x.s}</Badge>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      )}
+
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
@@ -67,7 +92,7 @@ export function DashboardTab({ acoes, decisoesPendentes }: DashboardTabProps) {
               <BarChart data={chartData} layout="vertical" margin={{ left: 8, right: 8 }}>
                 <CartesianGrid strokeDasharray="3 3" horizontal={false} />
                 <XAxis type="number" allowDecimals={false} />
-                <YAxis type="category" dataKey="frente" width={80} />
+                <YAxis type="category" dataKey="frente" width={92} />
                 <Tooltip />
                 <Legend />
                 <Bar dataKey="Concluído" stackId="a" fill="var(--status-ok)" />
