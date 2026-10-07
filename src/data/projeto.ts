@@ -39,7 +39,7 @@ export interface Acao {
 
 export const ACOES: Acao[] = [
   { id: "a19", f: "Contratual", a: "Assinar contrato de locação do galpão da MEGA LOJA AV BRASIL", i: "2026-10-01", p: "2026-10-01", r: "", s: "Concluído", o: "Contrato assinado", fixo: true },
-  { id: "a01", f: "Estrutural", a: "Alinhar com o time interno de engenharia a avaliação da viga", i: "2026-09-28", p: "2026-10-02", r: "", s: "Suspenso temporariamente", o: "SUSPENSA TEMPORARIAMENTE — a parte da viga ficará para depois. Laudo e ART antes de qualquer intervenção", dec: "viga" },
+  { id: "a01", f: "Estrutural", a: "Alinhar com o time interno de engenharia a avaliação da viga", i: "2026-09-28", p: "2026-10-02", r: "", s: "Suspenso temporariamente", o: "SUSPENSA TEMPORARIAMENTE — a parte da viga ficará para depois. LAUDO antes de qualquer intervenção", dec: "viga" },
   { id: "a02", f: "Estrutural", a: "Contratar manutenção do telhado (retirada de goteiras)", i: "2026-09-28", p: "2026-10-02", r: "", s: "Não iniciado", o: "Exigir equipe em conformidade com a NR-35" },
   { id: "a03", f: "Estrutural", a: "Alugar andaime", i: "2026-09-28", p: "2026-10-02", r: "", s: "Cancelado", o: "CANCELADO — será utilizada a empilhadeira com cinto de segurança", fixo: true },
   { id: "a04", f: "Layout", a: "Definir layout em duas versões (com e sem remoção da viga)", i: "2026-09-28", p: "2026-10-02", r: "", s: "Não iniciado", o: "Curva A perto da expedição. Versão final depende da decisão da viga", dec: "layout" },
@@ -95,12 +95,12 @@ export const DECISOES: Decisao[] = [
   {
     id: "viga",
     titulo: "Liberação da intervenção na viga",
-    aprovador: "Time interno de engenharia (laudo e ART)",
+    aprovador: "Time interno de engenharia (laudo)",
     prazo: "2026-10-02",
     opcoes: ["Aguardando avaliação", "Liberada", "Não liberada", "Suspensa temporariamente"],
     negativas: [],
     descricao:
-      "Avaliar se a viga pode sofrer intervenção. Nenhuma intervenção acontece sem laudo e ART. Solução definida: a viga pode ser retirada; o piso sobe 50cm, com uma rampa de acesso e outra de saída (desnível de 50cm) para dar altura suficiente à carreta passar.",
+      "Avaliar se a viga pode sofrer intervenção. Nenhuma intervenção acontece sem laudo. Solução definida: a viga pode ser retirada; o piso sobe 50cm, com uma rampa de acesso e outra de saída (desnível de 50cm) para dar altura suficiente à carreta passar.",
     impacto: "SUSPENSA TEMPORARIAMENTE: a retirada da viga depende do laudo pericial do Glauco. Define se a intervenção acontece e qual versão de layout será usada. Se não liberar, segue o layout sem remoção.",
     acoes: ["a01", "a32", "a09"],
     estadoInicial: "Suspensa temporariamente",
