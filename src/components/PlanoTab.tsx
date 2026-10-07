@@ -26,7 +26,7 @@ const SITUACOES: Situacao[] = ["No prazo", "Atenção", "Atrasado", "Concluído"
 interface PlanoTabProps {
   acoes: AcaoComEstado[];
   podeEditar: boolean;
-  onUpdate: (id: string, patch: { s?: Status; r?: string }) => void;
+  onUpdate: (id: string, patch: { s?: Status; r?: string; p?: string }) => void;
 }
 
 export function PlanoTab({ acoes, podeEditar, onUpdate }: PlanoTabProps) {
@@ -99,7 +99,7 @@ export function PlanoTab({ acoes, podeEditar, onUpdate }: PlanoTabProps) {
                   <input
                     type="checkbox"
                     checked={x.s === "Concluído"}
-                    disabled={!podeEditar}
+                    disabled={!podeEditar || x.fixo}
                     onChange={(e) => onUpdate(x.id, { s: e.target.checked ? "Concluído" : "Não iniciado" })}
                     aria-label={`Marcar "${x.a}" como concluída`}
                   />
@@ -110,7 +110,25 @@ export function PlanoTab({ acoes, podeEditar, onUpdate }: PlanoTabProps) {
                   {x.marco && <Badge className="ml-2 bg-primary text-primary-foreground">Marco</Badge>}
                 </TableCell>
                 <TableCell>{fmt(x.i)}</TableCell>
-                <TableCell>{fmt(x.p)}</TableCell>
+                <TableCell>
+                  {x.prazoEditavel ? (
+                    <Input
+                      type="date"
+                      key={x.p}
+                      defaultValue={x.p}
+                      disabled={!podeEditar}
+                      aria-label={`Prazo de "${x.a}"`}
+                      className="h-8 w-36"
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        // Ignora anos incompletos enquanto a pessoa digita (ex.: 0002-10-20).
+                        if (v !== x.p && (v === "" || (/^\d{4}-\d{2}-\d{2}$/.test(v) && v >= "2020"))) onUpdate(x.id, { p: v });
+                      }}
+                    />
+                  ) : (
+                    fmt(x.p)
+                  )}
+                </TableCell>
                 <TableCell>
                   <Input
                     defaultValue={x.r}
@@ -128,7 +146,7 @@ export function PlanoTab({ acoes, podeEditar, onUpdate }: PlanoTabProps) {
                   <Select
                     value={x.s}
                     onValueChange={(v) => v && onUpdate(x.id, { s: v as Status })}
-                    disabled={!podeEditar}
+                    disabled={!podeEditar || x.fixo}
                   >
                     <SelectTrigger size="sm" className="w-36">
                       <SelectValue />
@@ -155,7 +173,8 @@ export function PlanoTab({ acoes, podeEditar, onUpdate }: PlanoTabProps) {
       <p className="text-xs text-muted-foreground">
         Situação calculada automaticamente pela data do dia: <b>Atrasado</b> quando o prazo passou
         sem conclusão; <b>Atenção</b> quando faltam até 2 dias para o prazo; <b>No prazo</b> nos
-        demais casos.
+        demais casos. Ações sem prazo definido no plano podem ter o prazo preenchido direto na
+        coluna <b>Prazo</b>.
       </p>
     </div>
   );

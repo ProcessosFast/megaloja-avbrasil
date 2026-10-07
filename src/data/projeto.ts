@@ -33,10 +33,12 @@ export interface Acao {
   o: string;
   marco?: boolean;
   dec?: string;
+  // Status definitivo: o que estiver salvo pelo site não sobrescreve.
+  fixo?: boolean;
 }
 
 export const ACOES: Acao[] = [
-  { id: "a19", f: "Contratual", a: "Assinar contrato de locação do galpão da MEGA LOJA AV BRASIL", i: "2026-10-01", p: "2026-10-01", r: "", s: "Não iniciado", o: "Prazo de assinatura 01/10" },
+  { id: "a19", f: "Contratual", a: "Assinar contrato de locação do galpão da MEGA LOJA AV BRASIL", i: "2026-10-01", p: "2026-10-01", r: "", s: "Concluído", o: "Contrato assinado", fixo: true },
   { id: "a01", f: "Estrutural", a: "Alinhar com o time interno de engenharia a avaliação da viga", i: "2026-09-28", p: "2026-10-02", r: "", s: "Suspenso temporariamente", o: "SUSPENSA TEMPORARIAMENTE — a parte da viga ficará para depois. Laudo e ART antes de qualquer intervenção", dec: "viga" },
   { id: "a02", f: "Estrutural", a: "Contratar manutenção do telhado (retirada de goteiras)", i: "2026-09-28", p: "2026-10-02", r: "", s: "Não iniciado", o: "Exigir equipe em conformidade com a NR-35" },
   { id: "a03", f: "Estrutural", a: "Alugar andaime", i: "2026-09-28", p: "2026-10-02", r: "", s: "Não iniciado", o: "Entrega até 05/10" },
@@ -57,15 +59,11 @@ export const ACOES: Acao[] = [
   { id: "a17", f: "Estoque", a: "Mudança da DCS · 16/10", i: "2026-10-16", p: "2026-10-16", r: "", s: "Não iniciado", o: "Ver aba Quadro de pessoal", marco: true },
   { id: "a18", f: "Estoque", a: "Contingência e conferência final", i: "2026-10-17", p: "2026-10-17", r: "", s: "Não iniciado", o: "Sábado reservado para atrasos" },
   // Pendências avulsas — sem data definida ainda (ver Cronograma: aparecem como "Sem data definida").
-  { id: "a20", f: "Diversos", a: "2 equipes permuta", i: "", p: "", r: "", s: "Não iniciado", o: "" },
   { id: "a21", f: "Diversos", a: "Frente final galpão", i: "", p: "", r: "", s: "Não iniciado", o: "" },
   { id: "a22", f: "Diversos", a: "E-mail Ramos e Realengo", i: "", p: "", r: "Ramos e Realengo", s: "Não iniciado", o: "" },
   { id: "a24", f: "Diversos", a: "Blindex frente loja", i: "", p: "", r: "", s: "Não iniciado", o: "" },
-  { id: "a25", f: "Diversos", a: "Ar condicionado da operação", i: "", p: "", r: "", s: "Não iniciado", o: "" },
-  { id: "a26", f: "Diversos", a: "Josiel elétrica", i: "", p: "", r: "Josiel", s: "Não iniciado", o: "" },
-  { id: "a27", f: "Diversos", a: "Internet", i: "", p: "", r: "Plínio", s: "Não iniciado", o: "" },
-  { id: "a28", f: "Diversos", a: "Contrato Diego Laranjeiras", i: "", p: "", r: "Diego Laranjeiras", s: "Não iniciado", o: "Diego Laranjeiras vai retornar hoje sobre o contrato." },
-  { id: "a29", f: "Diversos", a: "Limpeza do galpão com 10 faxineiros", i: "2026-10-05", p: "2026-10-13", r: "", s: "Não iniciado", o: "Limpeza pronta até 13/10" },
+  { id: "a27", f: "Diversos", a: "Instalação de rede", i: "", p: "", r: "Plínio", s: "Não iniciado", o: "" },
+  { id: "a29", f: "Diversos", a: "Limpeza do galpão com 10 faxineiros", i: "2026-10-05", p: "2026-10-13", r: "", s: "Em andamento", o: "Limpeza pronta até 13/10" },
   { id: "a30", f: "Diversos", a: "Mudança de Realengo e Ramos", i: "2026-10-26", p: "2026-10-26", r: "Ramos e Realengo", s: "Não iniciado", o: "Realengo e Ramos precisam se mudar até 26/10" },
   { id: "a32", f: "Estrutural", a: "Laudo pericial do Glauco · viga", i: "", p: "", r: "Glauco", s: "Não iniciado", o: "A retirada da viga está suspensa dependendo deste laudo", dec: "viga" },
   { id: "a33", f: "Diversos", a: "Limpeza e teste de todos os A.C.", i: "", p: "", r: "", s: "Não iniciado", o: "" },

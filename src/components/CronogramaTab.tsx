@@ -50,9 +50,12 @@ export function CronogramaTab({ acoes }: CronogramaTabProps) {
   const [fSit, setFSit] = useState<string>("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // Estende o cronograma se algum prazo definido pelo site passar do fim do projeto.
+  const fimIso = acoes.reduce((m, x) => (x.p && x.p > m ? x.p : m), PROJETO.fim);
+
   const dias = useMemo<DayMeta[]>(() => {
     const out: DayMeta[] = [];
-    const fim = d(PROJETO.fim);
+    const fim = d(fimIso);
     const hojeIso = iso(new Date());
     const feriados = new Set(PROJETO.feriados);
     for (let t = d(PROJETO.inicio); diff(t, fim) <= 0; t = new Date(t.getTime() + 86400000)) {
@@ -66,7 +69,7 @@ export function CronogramaTab({ acoes }: CronogramaTabProps) {
       });
     }
     return out;
-  }, []);
+  }, [fimIso]);
 
   const filtradas = acoes.filter(
     (x) => (!fFrente || x.f === fFrente) && (!fSit || x.sit === fSit),

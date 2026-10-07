@@ -11,6 +11,8 @@ const LOCAL_KEY = "mega-loja-av-brasil";
 export interface AcaoPatch {
   s?: Status;
   r?: string;
+  // Prazo definido pelo site (só para ações sem prazo nos dados base).
+  p?: string;
   atualizadoEm?: string;
 }
 

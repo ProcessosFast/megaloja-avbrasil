@@ -30,6 +30,8 @@ export type Situacao = "Concluído" | "No prazo" | "Atenção" | "Atrasado" | "S
 
 export interface AcaoComEstado extends Acao {
   sit: Situacao;
+  // true quando o prazo pode ser definido pelo site (não veio nos dados base).
+  prazoEditavel: boolean;
 }
 
 export function situacao(x: { s: Status; p: string }): Situacao {
@@ -45,8 +47,11 @@ export function situacao(x: { s: Status; p: string }): Situacao {
 export function acoesAtuais(estAcoes: EstadoAcoes): AcaoComEstado[] {
   return ACOES.map((x) => {
     const o = estAcoes[x.id] || {};
-    const m: Acao = { ...x, s: o.s ?? x.s, r: o.r ?? x.r };
-    return { ...m, sit: situacao(m) };
+    const prazoEditavel = !x.p;
+    const p = x.p || (prazoEditavel && o.p) || "";
+    const i = x.i || (prazoEditavel && o.p) || "";
+    const m: Acao = { ...x, s: x.fixo ? x.s : (o.s ?? x.s), r: o.r ?? x.r, i, p };
+    return { ...m, sit: situacao(m), prazoEditavel };
   });
 }
 
