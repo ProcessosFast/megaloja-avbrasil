@@ -41,19 +41,21 @@ export interface Acao {
 
 export const ACOES: Acao[] = [
   { id: "a19", f: "Contratual", a: "Assinar contrato de locação do galpão da MEGA LOJA AV BRASIL", i: "2026-10-01", p: "2026-10-01", r: "", s: "Concluído", o: "Contrato assinado", fixo: true },
-  { id: "a01", f: "Estrutural", a: "Alinhar com o time interno de engenharia a avaliação da viga", i: "2026-09-28", p: "2026-10-02", r: "", s: "Suspenso temporariamente", o: "SUSPENSA TEMPORARIAMENTE — a parte da viga ficará para depois. LAUDO antes de qualquer intervenção", dec: "viga" },
+  // Viga, laudo e layout — mesmo assunto, em sequência: avaliação/laudo -> retirada da viga -> layout.
+  { id: "a01", f: "Viga e layout", a: "Alinhar com o time interno de engenharia a avaliação da viga", i: "2026-09-28", p: "2026-10-02", r: "", s: "Suspenso temporariamente", o: "SUSPENSA TEMPORARIAMENTE — a parte da viga ficará para depois. LAUDO antes de qualquer intervenção", dec: "viga" },
+  { id: "a32", f: "Viga e layout", a: "Laudo pericial do Glauco · viga", i: "", p: "", r: "Glauco", s: "Não iniciado", o: "A retirada da viga está suspensa dependendo deste laudo", dec: "viga" },
+  { id: "a09", f: "Viga e layout", a: "Retirar viga, elevar piso em 50cm e construir rampas de acesso e saída", i: "2026-10-05", p: "2026-10-07", r: "", s: "Suspenso temporariamente", o: "SUSPENSA TEMPORARIAMENTE — depende do laudo pericial do Glauco. Rampa de subida e rampa de descida (desnível de 50cm) para dar altura suficiente à carreta passar. Somente com laudo aprovado.", dec: "viga" },
+  { id: "a04", f: "Viga e layout", a: "Definir layout em duas versões (com e sem remoção da viga)", i: "2026-09-28", p: "2026-10-08", r: "", s: "Em andamento", o: "Aguardando validação do Joselio; Josiel irá enviar hoje, 07/10. Curva A perto da expedição. Versão final depende da decisão da viga", dec: "layout" },
+  { id: "a11", f: "Viga e layout", a: "Montar almoxarifado", i: "2026-10-07", p: "2026-10-14", r: "", s: "Em andamento", o: "Layout montado; será enviado hoje, 07/10, para o Joselio aprovar" },
+  { id: "a12", f: "Viga e layout", a: "Marcar layout no piso do novo galpão (se possível)", i: "2026-10-13", p: "2026-10-14", r: "", s: "Em andamento", o: "Layout em montagem; será enviado hoje, 07/10, para avaliação. 12/10 é feriado" },
   { id: "a02", f: "Estrutural", a: "Contratar manutenção do telhado (retirada de goteiras)", i: "2026-10-08", p: "2026-10-08", r: "", s: "Não iniciado", o: "A depender da visita do Osias em 08/10" },
   { id: "a03", f: "Estrutural", a: "Alugar andaime", i: "2026-09-28", p: "2026-10-02", r: "", s: "Cancelado", o: "CANCELADO — será utilizada a empilhadeira com cinto de segurança", fixo: true },
-  { id: "a04", f: "Layout", a: "Definir layout em duas versões (com e sem remoção da viga)", i: "2026-09-28", p: "2026-10-08", r: "", s: "Em andamento", o: "Aguardando validação do Joselio; Josiel irá enviar hoje, 07/10. Curva A perto da expedição. Versão final depende da decisão da viga", dec: "layout" },
   { id: "a05", f: "Transporte", a: "Reservar 2 carretas e 2 trucks para 16/10", i: "2026-09-28", p: "2026-10-02", r: "", s: "Concluído", o: "Caminhão fechado ou sider para as placas", fixo: true },
   { id: "a06", f: "Transporte", a: "Alugar 1 empilhadeira para o novo galpão", i: "2026-09-28", p: "2026-10-02", r: "", s: "Concluído", o: "Empilhadeira chega hoje, 07/10", fixo: true },
   { id: "a07", f: "Fiscal", a: "Alinhar notas fiscais de transferência com o fiscal/contábil", i: "2026-09-28", p: "2026-10-02", r: "", s: "Concluído", o: "Uma nota por carga", fixo: true },
   { id: "a08", f: "Estrutural", a: "Executar manutenção do telhado", i: "2026-10-05", p: "2026-10-13", r: "", s: "Não iniciado", o: "Estrutura pronta até 13/10" },
   { id: "a31", f: "Estrutural", a: "Visita do Osias (pedreiro) para ver a manutenção do telhado", i: "2026-10-08", p: "2026-10-08", r: "Osias", s: "Não iniciado", o: "Remarcada para 08/10 devido à altura; serviços por terceiro" },
-  { id: "a09", f: "Estrutural", a: "Retirar viga, elevar piso em 50cm e construir rampas de acesso e saída", i: "2026-10-05", p: "2026-10-07", r: "", s: "Suspenso temporariamente", o: "SUSPENSA TEMPORARIAMENTE — depende do laudo pericial do Glauco. Rampa de subida e rampa de descida (desnível de 50cm) para dar altura suficiente à carreta passar. Somente com laudo aprovado.", dec: "viga" },
   { id: "a10", f: "Estrutural", a: "Retirar andaime", i: "2026-10-13", p: "2026-10-13", r: "", s: "Cancelado", o: "CANCELADO — sem andaime (aluguel cancelado)", fixo: true },
-  { id: "a11", f: "Layout", a: "Montar almoxarifado", i: "2026-10-07", p: "2026-10-14", r: "", s: "Em andamento", o: "Layout montado; será enviado hoje, 07/10, para o Joselio aprovar" },
-  { id: "a12", f: "Layout", a: "Marcar layout no piso do novo galpão (se possível)", i: "2026-10-13", p: "2026-10-14", r: "", s: "Em andamento", o: "Layout em montagem; será enviado hoje, 07/10, para avaliação. 12/10 é feriado" },
   { id: "a13", f: "Estoque", a: "Pré-montar paletes no almoxarifado em Japeri", i: "2026-10-07", p: "2026-10-16", r: "", s: "Em andamento", o: "Início 07/10, finalização 16/10" },
   { id: "a14", f: "Fiscal", a: "Confirmar emissão das notas", i: "2026-10-15", p: "2026-10-15", r: "", s: "Não iniciado", o: "" },
   { id: "a15", f: "Transporte", a: "Receber empilhadeira alugada no novo galpão", i: "2026-10-07", p: "2026-10-07", r: "", s: "Não iniciado", o: "Antecipado: chega hoje, 07/10 (antes previsto para 15/10)" },
@@ -74,7 +76,6 @@ export const ACOES: Acao[] = [
   { id: "a42", f: "Legalização", a: "3) Pagamento de taxa e liberação do Alvará de Funcionamento", i: "", p: "", r: "", s: "Não iniciado", o: "", critico: true },
   { id: "a43", f: "Legalização", a: "4) Inscrição Municipal e pagamento da taxa de inscrição", i: "", p: "", r: "", s: "Não iniciado", o: "", critico: true },
   { id: "a44", f: "Legalização", a: "5) Liberação no Estado para emissão de NF-e e NFC-e", i: "", p: "", r: "", s: "Não iniciado", o: "", critico: true },
-  { id: "a32", f: "Estrutural", a: "Laudo pericial do Glauco · viga", i: "", p: "", r: "Glauco", s: "Não iniciado", o: "A retirada da viga está suspensa dependendo deste laudo", dec: "viga" },
   { id: "a33", f: "Diversos", a: "Limpeza e teste de todos os A.C.", i: "", p: "", r: "", s: "Não iniciado", o: "" },
   { id: "a34", f: "Diversos", a: "Chaves e portas abertas", i: "", p: "", r: "", s: "Não iniciado", o: "" },
   { id: "a35", f: "Diversos", a: "Teste de todas as instalações elétricas", i: "", p: "", r: "", s: "Não iniciado", o: "" },
@@ -188,4 +189,4 @@ export const ATENCAO: string[] = [
   "12/10 (segunda) é feriado: tudo que depende de terceiros precisa estar fechado até 09/10.",
 ];
 
-export const FRENTES = ["Legalização", "Contratual", "Estrutural", "Layout", "Transporte", "Fiscal", "Estoque", "Diversos"] as const;
+export const FRENTES = ["Legalização", "Contratual", "Viga e layout", "Estrutural", "Transporte", "Fiscal", "Estoque", "Diversos"] as const;
