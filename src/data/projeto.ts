@@ -67,7 +67,7 @@ export const ACOES: Acao[] = [
   { id: "a27", f: "Diversos", a: "Instalação de rede e wireless", i: "", p: "", r: "Plínio", s: "Não iniciado", o: "Depende do layout das salas" },
   { id: "a29", f: "Diversos", a: "Limpeza do galpão com 10 faxineiros", i: "2026-10-05", p: "2026-10-13", r: "", s: "Em andamento", o: "Limpeza pronta até 13/10" },
   { id: "a30", f: "Diversos", a: "Mudança de Realengo e Ramos", i: "2026-10-26", p: "2026-10-26", r: "Ramos e Realengo", s: "Não iniciado", o: "Realengo e Ramos precisam se mudar até 26/10", marco: true },
-  { id: "a39", f: "Diversos", a: "Mudança de Bonsucesso", i: "", p: "", r: "", s: "Não iniciado", o: "Sem data definida ainda" },
+  { id: "a39", f: "Diversos", a: "Mudança de Bonsucesso", i: "", p: "", r: "", s: "Não iniciado", o: "Sem data definida ainda", marco: true },
   // Legalização do imóvel — pendências críticas, em sequência.
   { id: "a40", f: "Legalização", a: "1) Pedido de viabilidade na Prefeitura", i: "", p: "", r: "", s: "Não iniciado", o: "", critico: true },
   { id: "a41", f: "Legalização", a: "2) Avaliação da CET-RIO para imóvel acima de 6 mil m²", i: "", p: "", r: "", s: "Não iniciado", o: "Nota: algumas alterações podem ocorrer. A Casa do Montador, por exemplo, exige CET-RIO; outras não vão exigir certidão do Corpo de Bombeiros. Essas exigências podem variar.", critico: true },
