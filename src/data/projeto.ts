@@ -40,7 +40,7 @@ export interface Acao {
 export const ACOES: Acao[] = [
   { id: "a19", f: "Contratual", a: "Assinar contrato de locação do galpão da MEGA LOJA AV BRASIL", i: "2026-10-01", p: "2026-10-01", r: "", s: "Concluído", o: "Contrato assinado", fixo: true },
   { id: "a01", f: "Estrutural", a: "Alinhar com o time interno de engenharia a avaliação da viga", i: "2026-09-28", p: "2026-10-02", r: "", s: "Suspenso temporariamente", o: "SUSPENSA TEMPORARIAMENTE — a parte da viga ficará para depois. LAUDO antes de qualquer intervenção", dec: "viga" },
-  { id: "a02", f: "Estrutural", a: "Contratar manutenção do telhado (retirada de goteiras)", i: "2026-09-28", p: "2026-10-02", r: "", s: "Não iniciado", o: "Exigir equipe em conformidade com a NR-35" },
+  { id: "a02", f: "Estrutural", a: "Contratar manutenção do telhado (retirada de goteiras)", i: "2026-09-28", p: "2026-10-02", r: "", s: "Não iniciado", o: "" },
   { id: "a03", f: "Estrutural", a: "Alugar andaime", i: "2026-09-28", p: "2026-10-02", r: "", s: "Cancelado", o: "CANCELADO — será utilizada a empilhadeira com cinto de segurança", fixo: true },
   { id: "a04", f: "Layout", a: "Definir layout em duas versões (com e sem remoção da viga)", i: "2026-09-28", p: "2026-10-02", r: "", s: "Não iniciado", o: "Curva A perto da expedição. Versão final depende da decisão da viga", dec: "layout" },
   { id: "a05", f: "Transporte", a: "Reservar 2 carretas e 2 trucks para 16/10", i: "2026-09-28", p: "2026-10-02", r: "", s: "Concluído", o: "Caminhão fechado ou sider para as placas", fixo: true },
