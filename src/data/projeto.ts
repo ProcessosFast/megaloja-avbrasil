@@ -65,6 +65,7 @@ export const ACOES: Acao[] = [
   { id: "a27", f: "Diversos", a: "Instalação de rede", i: "", p: "", r: "Plínio", s: "Não iniciado", o: "" },
   { id: "a29", f: "Diversos", a: "Limpeza do galpão com 10 faxineiros", i: "2026-10-05", p: "2026-10-13", r: "", s: "Em andamento", o: "Limpeza pronta até 13/10" },
   { id: "a30", f: "Diversos", a: "Mudança de Realengo e Ramos", i: "2026-10-26", p: "2026-10-26", r: "Ramos e Realengo", s: "Não iniciado", o: "Realengo e Ramos precisam se mudar até 26/10" },
+  { id: "a39", f: "Diversos", a: "Mudança de Bonsucesso", i: "", p: "", r: "", s: "Não iniciado", o: "Sem data definida ainda" },
   { id: "a32", f: "Estrutural", a: "Laudo pericial do Glauco · viga", i: "", p: "", r: "Glauco", s: "Não iniciado", o: "A retirada da viga está suspensa dependendo deste laudo", dec: "viga" },
   { id: "a33", f: "Diversos", a: "Limpeza e teste de todos os A.C.", i: "", p: "", r: "", s: "Não iniciado", o: "" },
   { id: "a34", f: "Diversos", a: "Chaves e portas abertas", i: "", p: "", r: "", s: "Não iniciado", o: "" },
