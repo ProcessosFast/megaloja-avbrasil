@@ -11,7 +11,7 @@ import type { AcaoComEstado, Situacao } from "@/lib/dominio";
 import { d, diff, iso } from "@/lib/dominio";
 
 const WD = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
-const SITUACOES: Situacao[] = ["No prazo", "Atenção", "Atrasado", "Concluído", "Sem prazo", "Suspensa"];
+const SITUACOES: Situacao[] = ["No prazo", "Atenção", "Atrasado", "Concluído", "Sem prazo", "Suspensa", "Cancelada"];
 // Encolhe em telas estreitas (vw) para sobrar espaço para os dias, sem nunca ficar ilegível.
 const LABEL_COL = "clamp(130px,38vw,260px)";
 
@@ -20,6 +20,7 @@ function barClass(x: AcaoComEstado): string {
   if (x.marco) return "bg-[repeating-linear-gradient(45deg,var(--primary)_0_8px,var(--foreground)_8px_16px)]";
   if (x.s === "Concluído") return "bg-status-ok";
   if (x.sit === "Suspensa") return "border-2 border-dashed border-muted-foreground bg-muted";
+  if (x.sit === "Cancelada") return "bg-muted-foreground/30";
   if (x.sit === "Atrasado") return "bg-destructive";
   if (x.sit === "Atenção") return "border-2 border-status-warn bg-status-warn-soft";
   if (x.s === "Em andamento") return "bg-status-doing";
@@ -231,6 +232,7 @@ export function CronogramaTab({ acoes }: CronogramaTabProps) {
         <LegendDot className="border-2 border-status-warn bg-status-warn-soft rounded-[3px]" label="Atenção (vence em até 2 dias)" />
         <LegendDot className="bg-destructive rounded-[3px]" label="Atrasado · Dia da mudança" />
         <LegendDot className="border-2 border-dashed border-muted-foreground bg-muted rounded-[3px]" label="Suspensa temporariamente" />
+        <LegendDot className="bg-muted-foreground/30 rounded-[3px]" label="Cancelada" />
         <LegendDot className="bg-holiday rounded-[3px]" label="Feriado 12/10" />
       </div>
     </div>

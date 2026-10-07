@@ -12,7 +12,7 @@ interface DashboardTabProps {
 }
 
 export function DashboardTab({ acoes, decisoesPendentes }: DashboardTabProps) {
-  const tot = acoes.length;
+  const tot = acoes.filter((x) => x.sit !== "Cancelada").length;
   const conc = acoes.filter((x) => x.s === "Concluído").length;
   const and = acoes.filter((x) => x.s === "Em andamento").length;
   const late = acoes.filter((x) => x.sit === "Atrasado").length;
@@ -31,7 +31,7 @@ export function DashboardTab({ acoes, decisoesPendentes }: DashboardTabProps) {
   });
 
   const prox = acoes
-    .filter((x) => x.s !== "Concluído" && x.sit !== "Suspensa" && diff(d(x.p), hoje) >= 0 && diff(d(x.p), hoje) <= 7)
+    .filter((x) => x.s !== "Concluído" && x.sit !== "Suspensa" && x.sit !== "Cancelada" && diff(d(x.p), hoje) >= 0 && diff(d(x.p), hoje) <= 7)
     .sort((a, b) => d(a.p).getTime() - d(b.p).getTime());
   const lista = [...acoes.filter((x) => x.sit === "Atrasado"), ...prox];
 

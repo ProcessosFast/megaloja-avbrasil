@@ -26,7 +26,7 @@ export const diff = (a: Date, b: Date): number => Math.round((a.getTime() - b.ge
 export const iso = (t: Date): string =>
   t.getFullYear() + "-" + String(t.getMonth() + 1).padStart(2, "0") + "-" + String(t.getDate()).padStart(2, "0");
 
-export type Situacao = "Concluído" | "No prazo" | "Atenção" | "Atrasado" | "Sem prazo" | "Suspensa";
+export type Situacao = "Concluído" | "No prazo" | "Atenção" | "Atrasado" | "Sem prazo" | "Suspensa" | "Cancelada";
 
 export interface AcaoComEstado extends Acao {
   sit: Situacao;
@@ -37,6 +37,7 @@ export interface AcaoComEstado extends Acao {
 export function situacao(x: { s: Status; p: string }): Situacao {
   if (x.s === "Concluído") return "Concluído";
   if (x.s === "Suspenso temporariamente") return "Suspensa";
+  if (x.s === "Cancelado") return "Cancelada";
   if (!x.p) return "Sem prazo";
   const falta = diff(d(x.p), hoje);
   if (falta < 0) return "Atrasado";

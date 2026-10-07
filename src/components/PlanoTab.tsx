@@ -21,7 +21,7 @@ import type { AcaoComEstado, Situacao } from "@/lib/dominio";
 import { fmt } from "@/lib/dominio";
 import { SITUACAO_BADGE } from "@/lib/situacao-ui";
 
-const SITUACOES: Situacao[] = ["No prazo", "Atenção", "Atrasado", "Concluído", "Sem prazo", "Suspensa"];
+const SITUACOES: Situacao[] = ["No prazo", "Atenção", "Atrasado", "Concluído", "Sem prazo", "Suspensa", "Cancelada"];
 
 interface PlanoTabProps {
   acoes: AcaoComEstado[];

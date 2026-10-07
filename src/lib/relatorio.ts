@@ -15,6 +15,7 @@ const SIT_CLASSE: Record<string, string> = {
   "Atrasado": "late",
   "Sem prazo": "neutro",
   "Suspensa": "susp",
+  "Cancelada": "susp",
 };
 
 function dataHora(isoStr: string): string {
@@ -42,7 +43,7 @@ export function montarRelatorio({ acoes, estadoDecisoes, decisoesCustom }: Dados
   const contagem = contar(PROJETO.mudanca, "Mudança DCS");
   const contagemLojas = contar(PROJETO.mudancaLojas, "Mudança lojas Ramos e Realengo");
 
-  const ativas = acoes.filter((x) => x.sit !== "Suspensa");
+  const ativas = acoes.filter((x) => x.sit !== "Suspensa" && x.sit !== "Cancelada");
   const conc = acoes.filter((x) => x.s === "Concluído").length;
   const and = acoes.filter((x) => x.s === "Em andamento").length;
   const late = acoes.filter((x) => x.sit === "Atrasado");
@@ -62,7 +63,7 @@ export function montarRelatorio({ acoes, estadoDecisoes, decisoesCustom }: Dados
   const decPend = decisoes.filter((x) => x.pend).length;
 
   const prox = acoes
-    .filter((x) => x.s !== "Concluído" && x.sit !== "Suspensa" && x.p && diff(d(x.p), hoje) >= 0 && diff(d(x.p), hoje) <= 7)
+    .filter((x) => x.s !== "Concluído" && x.sit !== "Suspensa" && x.sit !== "Cancelada" && x.p && diff(d(x.p), hoje) >= 0 && diff(d(x.p), hoje) <= 7)
     .sort((a, b) => d(a.p).getTime() - d(b.p).getTime());
 
   const kpis: [string, string, string?][] = [
