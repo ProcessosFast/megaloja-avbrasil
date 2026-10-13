@@ -83,7 +83,7 @@ export const ACOES: Acao[] = [
   { id: "a35", f: "Diversos", a: "Teste de todas as instalações elétricas", i: "", p: "2026-10-13", r: "", s: "Concluído", o: "Elétrica revisada", fixo: true },
   { id: "a36", f: "Diversos", a: "Organizar todas as chaves", i: "", p: "", r: "", s: "Não iniciado", o: "" },
   { id: "a37", f: "Diversos", a: "Criar cópias das chaves e identificá-las", i: "", p: "", r: "", s: "Não iniciado", o: "" },
-  { id: "a38", f: "Diversos", a: "Montar um claviculário", i: "", p: "", r: "", s: "Não iniciado", o: "" },
+  { id: "a38", f: "Diversos", a: "Montar um claviculário", i: "", p: "", r: "Diego", s: "Em andamento", o: "Claviculário comprado. Falta o Diego identificar as chaves e montar o quadro" },
 ];
 
 export interface Decisao {
