@@ -1,12 +1,13 @@
-import { FileDown } from "lucide-react";
+import { FileDown, FileSpreadsheet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface HeaderProps {
   atualizadoLabel: string;
   onExportar: () => void;
+  onExportarExcel: () => void;
 }
 
-export function Header({ atualizadoLabel, onExportar }: HeaderProps) {
+export function Header({ atualizadoLabel, onExportar, onExportarExcel }: HeaderProps) {
   return (
     <header className="border-b border-border bg-background">
       <div className="flex w-full flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-6 lg:px-10">
@@ -53,6 +54,10 @@ export function Header({ atualizadoLabel, onExportar }: HeaderProps) {
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <div className="text-sm text-muted-foreground">{atualizadoLabel}</div>
+          <Button variant="outline" onClick={onExportarExcel}>
+            <FileSpreadsheet />
+            Exportar plano (Excel)
+          </Button>
           <Button variant="outline" onClick={onExportar}>
             <FileDown />
             Exportar relatório

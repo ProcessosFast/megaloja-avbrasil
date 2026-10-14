@@ -16,6 +16,7 @@ import { acoesAtuais, decisoesPendentesCount } from "@/lib/dominio";
 import type { DecisaoCustom } from "@/lib/storage";
 import { useEstado } from "@/lib/storage";
 import { abrirRelatorio } from "@/lib/relatorio";
+import { exportarPlanoExcel } from "@/lib/excel";
 
 const OPCAO_PENDENTE_CUSTOM = "Aguardando decisão";
 
@@ -76,6 +77,14 @@ export default function App() {
     if (!ok) toast.error("O navegador bloqueou a nova aba. Libere pop-ups para este site e tente de novo.");
   }
 
+  async function handleExportarExcel() {
+    try {
+      await exportarPlanoExcel(acoes);
+    } catch {
+      toast.error("Não foi possível gerar o Excel. Tente de novo.");
+    }
+  }
+
   function handleExcluirDecisao(id: string) {
     remover("decisoesCustom", id);
     toast.success("Ponto de decisão removido");
@@ -83,7 +92,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header atualizadoLabel={atualizadoLabel} onExportar={handleExportar} />
+      <Header atualizadoLabel={atualizadoLabel} onExportar={handleExportar} onExportarExcel={handleExportarExcel} />
       <Hero />
 
       <main className="w-full px-4 pb-16 sm:px-6 lg:px-10">
