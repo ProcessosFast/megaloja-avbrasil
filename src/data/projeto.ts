@@ -44,6 +44,7 @@ export const ACOES: Acao[] = [
   // Viga, laudo e layout — mesmo assunto, em sequência: avaliação/laudo -> retirada da viga -> layout.
   { id: "a01", f: "Viga e layout", a: "Alinhar com o time interno de engenharia a avaliação da viga", i: "2026-09-28", p: "2026-10-02", r: "", s: "Suspenso temporariamente", o: "SUSPENSA TEMPORARIAMENTE — a parte da viga ficará para depois. LAUDO antes de qualquer intervenção", dec: "viga" },
   { id: "a32", f: "Viga e layout", a: "Laudo pericial do Glauco · viga", i: "", p: "2026-10-13", r: "Glauco", s: "Concluído", o: "Laudo concluído pelo Glauco em 13/10", dec: "viga", fixo: true },
+  { id: "a48", f: "Viga e layout", a: "Analisar o laudo técnico e decidir o plano de ação da viga", i: "2026-10-14", p: "", r: "", s: "Não iniciado", o: "A partir do laudo do Glauco (13/10). Define se a viga será retirada e qual versão do layout segue", dec: "viga" },
   { id: "a09", f: "Viga e layout", a: "Retirar viga, elevar piso em 50cm e construir rampas de acesso e saída", i: "2026-10-05", p: "2026-10-07", r: "", s: "Suspenso temporariamente", o: "SUSPENSA TEMPORARIAMENTE — depende do laudo pericial do Glauco. Rampa de subida e rampa de descida (desnível de 50cm) para dar altura suficiente à carreta passar. Somente com laudo aprovado.", dec: "viga" },
   { id: "a04", f: "Viga e layout", a: "Definir layout em duas versões (com e sem remoção da viga)", i: "2026-09-28", p: "2026-10-08", r: "", s: "Em andamento", o: "Aguardando validação do Joselio; Josiel irá enviar hoje, 07/10. Curva A perto da expedição. Versão final depende da decisão da viga", dec: "layout" },
   { id: "a11", f: "Viga e layout", a: "Montar almoxarifado", i: "2026-10-07", p: "2026-10-14", r: "", s: "Em andamento", o: "Layout montado; será enviado hoje, 07/10, para o Joselio aprovar" },
@@ -115,7 +116,7 @@ export const DECISOES: Decisao[] = [
     descricao:
       "Avaliar se a viga pode sofrer intervenção. Nenhuma intervenção acontece sem laudo. Solução definida: a viga pode ser retirada; o piso sobe 50cm, com uma rampa de acesso e outra de saída (desnível de 50cm) para dar altura suficiente à carreta passar.",
     impacto: "SUSPENSA TEMPORARIAMENTE: a retirada da viga depende do laudo pericial do Glauco. Define se a intervenção acontece e qual versão de layout será usada. Se não liberar, segue o layout sem remoção.",
-    acoes: ["a01", "a32", "a09"],
+    acoes: ["a01", "a32", "a48", "a09"],
     estadoInicial: "Suspensa temporariamente",
     dataInicial: "2026-10-05",
   },
