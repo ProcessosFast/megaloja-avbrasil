@@ -78,10 +78,13 @@ export default function App() {
   }
 
   async function handleExportarExcel() {
+    const id = toast.loading("Gerando o Excel…");
     try {
       await exportarPlanoExcel(acoes);
-    } catch {
-      toast.error("Não foi possível gerar o Excel. Tente de novo.");
+      toast.success("Excel gerado. Confira a pasta de downloads.", { id });
+    } catch (e) {
+      console.error(e);
+      toast.error(`Não foi possível gerar o Excel: ${e instanceof Error ? e.message : String(e)}`, { id });
     }
   }
 

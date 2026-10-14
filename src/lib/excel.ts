@@ -72,6 +72,9 @@ export async function exportarPlanoExcel(acoes: AcaoComEstado[]): Promise<void> 
   const link = document.createElement("a");
   link.href = url;
   link.download = `plano-de-acao-mega-loja-av-brasil-${iso(new Date())}.xlsx`;
+  // Alguns navegadores só baixam se o link estiver na página.
+  document.body.appendChild(link);
   link.click();
+  link.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
