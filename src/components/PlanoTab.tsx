@@ -21,7 +21,6 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { FRENTES, STATUS, type Status } from "@/data/projeto";
 import type { AcaoComEstado, Situacao } from "@/lib/dominio";
-import { fmt } from "@/lib/dominio";
 import { SITUACAO_BADGE } from "@/lib/situacao-ui";
 import type { AcaoCustom } from "@/lib/storage";
 
