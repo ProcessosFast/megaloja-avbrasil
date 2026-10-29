@@ -13,7 +13,7 @@ import { Toaster } from "@/components/ui/sonner";
 import type { Status } from "@/data/projeto";
 import { DECISOES, PROJETO } from "@/data/projeto";
 import { acoesAtuais, decisoesPendentesCount } from "@/lib/dominio";
-import type { DecisaoCustom } from "@/lib/storage";
+import type { AcaoCustom, DecisaoCustom } from "@/lib/storage";
 import { useEstado } from "@/lib/storage";
 import { abrirRelatorio } from "@/lib/relatorio";
 import { exportarPlanoExcel } from "@/lib/excel";
@@ -27,7 +27,7 @@ export default function App() {
   const { estado, modo, podeEditar, salvar, remover } = useEstado();
   const [aba, setAba] = useState("dashboard");
 
-  const acoes = useMemo(() => acoesAtuais(estado.acoes), [estado.acoes]);
+  const acoes = useMemo(() => acoesAtuais(estado.acoes, estado.acoesCustom), [estado.acoes, estado.acoesCustom]);
   const decPendentes = useMemo(() => {
     const base = decisoesPendentesCount(estado.decisoes);
     const custom = Object.values(estado.decisoesCustom).filter(
@@ -45,8 +45,19 @@ export default function App() {
         : `Base de ${new Date(PROJETO.atualizadoEm).toLocaleDateString("pt-BR")} · alterações salvas neste navegador`;
 
   function handleAcaoUpdate(id: string, patch: { s?: Status; r?: string; p?: string }) {
-    salvar("acoes", id, patch);
+    salvar(estado.acoesCustom[id] ? "acoesCustom" : "acoes", id, patch);
     toast.success("Alteração salva");
+  }
+
+  function handleCriarAcao(dados: Omit<AcaoCustom, "s" | "criadoEm">) {
+    const id = `custom-${Date.now().toString(36)}`;
+    salvar("acoesCustom", id, { ...dados, s: "Não iniciado", criadoEm: new Date().toISOString() });
+    toast.success("Ação incluída no plano");
+  }
+
+  function handleExcluirAcao(id: string) {
+    remover("acoesCustom", id);
+    toast.success("Ação removida do plano");
   }
 
   function handleDecisao(id: string, status: string) {
@@ -128,7 +139,13 @@ export default function App() {
             <CronogramaTab acoes={acoes} />
           </TabsContent>
           <TabsContent value="plano">
-            <PlanoTab acoes={acoes} podeEditar={podeEditar} onUpdate={handleAcaoUpdate} />
+            <PlanoTab
+              acoes={acoes}
+              podeEditar={podeEditar}
+              onUpdate={handleAcaoUpdate}
+              onCriar={handleCriarAcao}
+              onExcluir={handleExcluirAcao}
+            />
           </TabsContent>
           <TabsContent value="decisoes">
             <DecisoesTab

@@ -2,7 +2,7 @@
 // Ordem de prioridade: /api/state (Upstash Redis na Vercel, compartilhado entre todos) >
 // window.claude (artifact db, quando embutido como artifact) > localStorage (só este navegador).
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { Status } from "@/data/projeto";
+import type { Acao, Status } from "@/data/projeto";
 
 const LOCAL_KEY = "mega-loja-av-brasil";
 // Marca que as alterações deste navegador já foram somadas ao banco.
@@ -24,6 +24,12 @@ export interface DecisaoPatch {
   atualizadoEm?: string;
 }
 
+// Ação incluída pelo site (não faz parte dos dados base do projeto).
+export type AcaoCustom = Pick<Acao, "f" | "a" | "i" | "p" | "r" | "s" | "o"> & {
+  criadoEm: string;
+  atualizadoEm?: string;
+};
+
 // Decisão criada manualmente pelo usuário (não faz parte dos dados base do projeto).
 export interface DecisaoCustom {
   titulo: string;
@@ -38,17 +44,19 @@ export interface DecisaoCustom {
 }
 
 export type EstadoAcoes = Record<string, AcaoPatch>;
+export type EstadoAcoesCustom = Record<string, AcaoCustom>;
 export type EstadoDecisoes = Record<string, DecisaoPatch>;
 export type EstadoDecisoesCustom = Record<string, DecisaoCustom>;
 
 export interface Estado {
   acoes: EstadoAcoes;
+  acoesCustom: EstadoAcoesCustom;
   decisoes: EstadoDecisoes;
   decisoesCustom: EstadoDecisoesCustom;
 }
 
-type Colecao = "acoes" | "decisoes" | "decisoesCustom";
-const COLECOES: Colecao[] = ["acoes", "decisoes", "decisoesCustom"];
+type Colecao = "acoes" | "acoesCustom" | "decisoes" | "decisoesCustom";
+const COLECOES: Colecao[] = ["acoes", "acoesCustom", "decisoes", "decisoesCustom"];
 type Modo = "carregando" | "online" | "local";
 
 interface ClaudeCollection {
@@ -75,13 +83,22 @@ declare global {
 }
 
 function estadoVazio(): Estado {
-  return { acoes: {}, decisoes: {}, decisoesCustom: {} };
+  return { acoes: {}, acoesCustom: {}, decisoes: {}, decisoesCustom: {} };
+}
+
+function normalizar(s: Partial<Estado> | null | undefined): Estado {
+  return {
+    acoes: s?.acoes || {},
+    acoesCustom: s?.acoesCustom || {},
+    decisoes: s?.decisoes || {},
+    decisoesCustom: s?.decisoesCustom || {},
+  };
 }
 
 function lerLocal(): Estado {
   try {
     const s = JSON.parse(localStorage.getItem(LOCAL_KEY) || "null");
-    if (s) return { acoes: s.acoes || {}, decisoes: s.decisoes || {}, decisoesCustom: s.decisoesCustom || {} };
+    if (s) return normalizar(s);
   } catch {
     // ignora estado local corrompido
   }
@@ -101,8 +118,7 @@ type Patches = Partial<Record<Colecao, Record<string, unknown>>>;
 async function lerApi(): Promise<Estado> {
   const r = await fetch(API, { cache: "no-store" });
   if (!r.ok) throw new Error(`HTTP ${r.status}`);
-  const d = (await r.json()) as Partial<Estado>;
-  return { acoes: d.acoes || {}, decisoes: d.decisoes || {}, decisoesCustom: d.decisoesCustom || {} };
+  return normalizar((await r.json()) as Partial<Estado>);
 }
 
 async function gravarApi(patches: Patches) {
@@ -242,7 +258,7 @@ export function useEstado() {
   }, []);
 
   const salvar = useCallback(
-    async (col: Colecao, id: string, patch: AcaoPatch | DecisaoPatch | Partial<DecisaoCustom>) => {
+    async (col: Colecao, id: string, patch: AcaoPatch | Partial<AcaoCustom> | DecisaoPatch | Partial<DecisaoCustom>) => {
       const antes = estadoRef.current[col][id];
       const novo = { ...(antes || {}), ...patch, atualizadoEm: new Date().toISOString() };
 

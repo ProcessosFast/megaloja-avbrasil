@@ -1,7 +1,7 @@
 // Funções puras de domínio — portadas de legacy/INDEX.html (linhas 474-501, 690-694).
 import type { Acao, Decisao, Status } from "@/data/projeto";
 import { ACOES, DECISOES } from "@/data/projeto";
-import type { EstadoAcoes, EstadoDecisoes } from "@/lib/storage";
+import type { EstadoAcoes, EstadoAcoesCustom, EstadoDecisoes } from "@/lib/storage";
 
 export const DAY = 86400000;
 
@@ -32,6 +32,8 @@ export interface AcaoComEstado extends Acao {
   sit: Situacao;
   // true quando o prazo pode ser definido pelo site (não veio nos dados base).
   prazoEditavel: boolean;
+  // true para ações incluídas pelo site (podem ser excluídas; salvas em acoesCustom).
+  custom?: boolean;
 }
 
 export function situacao(x: { s: Status; p: string }): Situacao {
@@ -45,8 +47,8 @@ export function situacao(x: { s: Status; p: string }): Situacao {
   return "No prazo";
 }
 
-export function acoesAtuais(estAcoes: EstadoAcoes): AcaoComEstado[] {
-  return ACOES.map((x) => {
+export function acoesAtuais(estAcoes: EstadoAcoes, estCustom: EstadoAcoesCustom = {}): AcaoComEstado[] {
+  const base = ACOES.map((x) => {
     const o = estAcoes[x.id] || {};
     const prazoEditavel = !x.p;
     const p = x.p || (prazoEditavel && o.p) || "";
@@ -54,6 +56,13 @@ export function acoesAtuais(estAcoes: EstadoAcoes): AcaoComEstado[] {
     const m: Acao = { ...x, s: x.fixo ? x.s : (o.s ?? x.s), r: o.r ?? x.r, i, p };
     return { ...m, sit: situacao(m), prazoEditavel };
   });
+  const incluidas = Object.entries(estCustom)
+    .sort(([, a], [, b]) => (a.criadoEm || "").localeCompare(b.criadoEm || ""))
+    .map(([id, x]): AcaoComEstado => {
+      const m: Acao = { id, f: x.f, a: x.a, i: x.i, p: x.p || "", r: x.r, s: x.s, o: x.o || "" };
+      return { ...m, sit: situacao(m), prazoEditavel: true, custom: true };
+    });
+  return [...base, ...incluidas];
 }
 
 export interface DecisaoAtual extends Decisao {

@@ -3,7 +3,7 @@ import { Redis } from '@upstash/redis'
 // Cada coleção editável vira um hash no Redis (ml:<coleção>), com um campo por item.
 // Assim duas pessoas editando itens diferentes ao mesmo tempo não se sobrescrevem.
 // Prefixo "ml:" permite usar o mesmo banco dos outros portais (fp:, pa:, py:).
-const COLLECTIONS = ['acoes', 'decisoes', 'decisoesCustom']
+const COLLECTIONS = ['acoes', 'acoesCustom', 'decisoes', 'decisoesCustom']
 
 // A integração da Vercel pode criar as variáveis com prefixo (ex.: STORAGE_KV_REST_API_URL).
 function findEnv(suffixes) {
