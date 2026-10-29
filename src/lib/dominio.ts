@@ -51,13 +51,13 @@ export function acoesAtuais(estAcoes: EstadoAcoes, estCustom: EstadoAcoesCustom 
     // Datas editadas pelo site prevalecem sobre as do plano base.
     const p = o.p ?? x.p;
     const i = o.i || x.i || (x.p ? "" : p);
-    const m: Acao = { ...x, s: x.fixo ? x.s : (o.s ?? x.s), r: o.r ?? x.r, i, p };
+    const m: Acao = { ...x, s: x.fixo ? x.s : (o.s ?? x.s), r: o.r ?? x.r, i, p, area: o.area ?? x.area ?? "" };
     return { ...m, sit: situacao(m) };
   });
   const incluidas = Object.entries(estCustom)
     .sort(([, a], [, b]) => (a.criadoEm || "").localeCompare(b.criadoEm || ""))
     .map(([id, x]): AcaoComEstado => {
-      const m: Acao = { id, f: x.f, a: x.a, i: x.i, p: x.p || "", r: x.r, s: x.s, o: x.o || "" };
+      const m: Acao = { id, f: x.f, a: x.a, i: x.i, p: x.p || "", r: x.r, s: x.s, o: x.o || "", area: x.area || "" };
       return { ...m, sit: situacao(m), custom: true };
     });
   return [...base, ...incluidas];

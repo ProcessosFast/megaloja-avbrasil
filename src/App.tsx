@@ -10,10 +10,9 @@ import { PlanoTab } from "@/components/PlanoTab";
 import { RecursosTab } from "@/components/RecursosTab";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Toaster } from "@/components/ui/sonner";
-import type { Status } from "@/data/projeto";
 import { DECISOES, PROJETO } from "@/data/projeto";
 import { acoesAtuais, decisoesPendentesCount } from "@/lib/dominio";
-import type { AcaoCustom, DecisaoCustom } from "@/lib/storage";
+import type { AcaoCustom, DecisaoCustom, EdicaoAcao } from "@/lib/storage";
 import { useEstado } from "@/lib/storage";
 import { abrirRelatorio } from "@/lib/relatorio";
 import { exportarPlanoExcel } from "@/lib/excel";
@@ -54,7 +53,7 @@ export default function App() {
         ? "Sincronizado"
         : `Base de ${new Date(PROJETO.atualizadoEm).toLocaleDateString("pt-BR")} · alterações salvas neste navegador`;
 
-  function handleAcaoUpdate(id: string, patch: { s?: Status; r?: string; i?: string; p?: string }) {
+  function handleAcaoUpdate(id: string, patch: EdicaoAcao) {
     salvar(estado.acoesCustom[id] ? "acoesCustom" : "acoes", id, patch);
     toast.success("Alteração salva");
   }

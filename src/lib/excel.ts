@@ -27,6 +27,7 @@ export async function exportarPlanoExcel(acoes: AcaoComEstado[]): Promise<void> 
   const ws = wb.addWorksheet("Plano de ação", { views: [{ state: "frozen", ySplit: 1 }] });
   ws.columns = [
     { header: "Frente", key: "f", width: 16 },
+    { header: "Área", key: "area", width: 18 },
     { header: "Ação", key: "a", width: 60 },
     { header: "Início", key: "i", width: 12, style: { numFmt: "dd/mm/yyyy" } },
     { header: "Prazo", key: "p", width: 12, style: { numFmt: "dd/mm/yyyy" } },
@@ -44,6 +45,7 @@ export async function exportarPlanoExcel(acoes: AcaoComEstado[]): Promise<void> 
   for (const x of ordenadas) {
     const row = ws.addRow({
       f: x.f,
+      area: x.area || "",
       a: x.a,
       i: x.i ? dataExcel(x.i) : null,
       p: x.p ? dataExcel(x.p) : null,

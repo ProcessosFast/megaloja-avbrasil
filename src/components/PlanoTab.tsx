@@ -19,17 +19,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
-import { FRENTES, STATUS, type Status } from "@/data/projeto";
+import { AREAS, FRENTES, STATUS, type Status } from "@/data/projeto";
 import type { AcaoComEstado, Situacao } from "@/lib/dominio";
 import { SITUACAO_BADGE } from "@/lib/situacao-ui";
-import type { AcaoCustom } from "@/lib/storage";
+import type { AcaoCustom, EdicaoAcao } from "@/lib/storage";
 
 const SITUACOES: Situacao[] = ["No prazo", "Atenção", "Atrasado", "Concluído", "Sem prazo", "Suspensa", "Cancelada"];
 
 interface PlanoTabProps {
   acoes: AcaoComEstado[];
   podeEditar: boolean;
-  onUpdate: (id: string, patch: { s?: Status; r?: string; i?: string; p?: string }) => void;
+  onUpdate: (id: string, patch: EdicaoAcao) => void;
   onCriar: (dados: Omit<AcaoCustom, "s" | "criadoEm">) => void;
   onExcluir: (id: string) => void;
 }
@@ -37,15 +37,72 @@ interface PlanoTabProps {
 // Ignora anos incompletos enquanto a pessoa digita (ex.: 0002-10-20).
 const dataValida = (v: string) => /^\d{4}-\d{2}-\d{2}$/.test(v) && v >= "2020";
 
+const SEM_AREA = "__sem_area__";
+const NOVA_AREA = "__nova_area__";
+
+// Seleção de área com opção de criar uma nova (fica disponível assim que alguma ação a usa).
+function AreaSelect({
+  value,
+  areas,
+  onChange,
+  disabled,
+  id,
+  className,
+}: {
+  value: string;
+  areas: string[];
+  onChange: (v: string) => void;
+  disabled?: boolean;
+  id?: string;
+  className?: string;
+}) {
+  return (
+    <Select
+      value={value || SEM_AREA}
+      disabled={disabled}
+      onValueChange={(v) => {
+        if (!v) return;
+        if (v === NOVA_AREA) {
+          const nova = window.prompt("Nome da nova área:")?.trim().slice(0, 40);
+          if (nova) onChange(nova);
+          return;
+        }
+        onChange(v === SEM_AREA ? "" : v);
+      }}
+    >
+      <SelectTrigger id={id} size="sm" className={className}>
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value={SEM_AREA}>Sem área</SelectItem>
+        {areas.map((a) => (
+          <SelectItem key={a} value={a}>
+            {a}
+          </SelectItem>
+        ))}
+        <SelectItem value={NOVA_AREA}>+ Outra área…</SelectItem>
+      </SelectContent>
+    </Select>
+  );
+}
+
 export function PlanoTab({ acoes, podeEditar, onUpdate, onCriar, onExcluir }: PlanoTabProps) {
   const [formAberto, setFormAberto] = useState(false);
   const [pFrente, setPFrente] = useState("");
+  const [pArea, setPArea] = useState("");
   const [pSit, setPSit] = useState("");
+
+  const areas = [...new Set([...AREAS, ...acoes.map((x) => x.area || "").filter(Boolean)])];
 
   // Pendências de máxima atenção ainda abertas sobem para o topo.
   const urgente = (x: AcaoComEstado) => (x.critico && x.s !== "Concluído" ? 0 : 1);
   const filtradas = acoes
-    .filter((x) => (!pFrente || x.f === pFrente) && (!pSit || x.sit === pSit))
+    .filter(
+      (x) =>
+        (!pFrente || x.f === pFrente) &&
+        (!pArea || (pArea === SEM_AREA ? !x.area : x.area === pArea)) &&
+        (!pSit || x.sit === pSit),
+    )
     .sort((a, b) => urgente(a) - urgente(b));
   const feitas = acoes.filter((x) => x.s === "Concluído").length;
 
@@ -77,6 +134,20 @@ export function PlanoTab({ acoes, podeEditar, onUpdate, onCriar, onExcluir }: Pl
               ))}
             </SelectContent>
           </Select>
+          <Select value={pArea || "all"} onValueChange={(v) => setPArea(v === "all" || !v ? "" : v)}>
+            <SelectTrigger size="sm" className="w-44">
+              <SelectValue placeholder="Todas as áreas" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todas as áreas</SelectItem>
+              <SelectItem value={SEM_AREA}>Sem área</SelectItem>
+              {areas.map((a) => (
+                <SelectItem key={a} value={a}>
+                  {a}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <Select value={pSit || "all"} onValueChange={(v) => setPSit(v === "all" || !v ? "" : v)}>
             <SelectTrigger size="sm" className="w-44">
               <SelectValue placeholder="Todas as situações" />
@@ -95,6 +166,7 @@ export function PlanoTab({ acoes, podeEditar, onUpdate, onCriar, onExcluir }: Pl
 
       {formAberto && (
         <NovaAcaoForm
+          areas={areas}
           onCriar={(dados) => {
             onCriar(dados);
             setFormAberto(false);
@@ -108,6 +180,7 @@ export function PlanoTab({ acoes, podeEditar, onUpdate, onCriar, onExcluir }: Pl
             <TableRow>
               <TableHead className="w-10">Feito</TableHead>
               <TableHead>Frente</TableHead>
+              <TableHead>Área</TableHead>
               <TableHead>Ação</TableHead>
               <TableHead>Início</TableHead>
               <TableHead>Prazo</TableHead>
@@ -130,6 +203,15 @@ export function PlanoTab({ acoes, podeEditar, onUpdate, onCriar, onExcluir }: Pl
                   />
                 </TableCell>
                 <TableCell>{x.f}</TableCell>
+                <TableCell>
+                  <AreaSelect
+                    value={x.area || ""}
+                    areas={areas}
+                    disabled={!podeEditar}
+                    className="w-40"
+                    onChange={(v) => v !== (x.area || "") && onUpdate(x.id, { area: v })}
+                  />
+                </TableCell>
                 <TableCell className="max-w-xs whitespace-normal">
                   {x.a}
                   {x.custom && <Badge className="ml-2 bg-secondary text-secondary-foreground">Incluída pelo site</Badge>}
@@ -238,9 +320,16 @@ export function PlanoTab({ acoes, podeEditar, onUpdate, onCriar, onExcluir }: Pl
   );
 }
 
-function NovaAcaoForm({ onCriar }: { onCriar: (dados: Omit<AcaoCustom, "s" | "criadoEm">) => void }) {
+function NovaAcaoForm({
+  areas,
+  onCriar,
+}: {
+  areas: string[];
+  onCriar: (dados: Omit<AcaoCustom, "s" | "criadoEm">) => void;
+}) {
   const formId = useId();
   const [frente, setFrente] = useState<string>("Diversos");
+  const [area, setArea] = useState("");
   const [acao, setAcao] = useState("");
   const [inicio, setInicio] = useState("");
   const [prazo, setPrazo] = useState("");
@@ -260,6 +349,7 @@ function NovaAcaoForm({ onCriar }: { onCriar: (dados: Omit<AcaoCustom, "s" | "cr
     if (!pode) return;
     onCriar({
       f: frente,
+      area,
       a: acao.trim().slice(0, 200),
       i: inicio,
       p: prazo,
@@ -272,7 +362,13 @@ function NovaAcaoForm({ onCriar }: { onCriar: (dados: Omit<AcaoCustom, "s" | "cr
     <Card>
       <CardContent className="p-5">
         <form onSubmit={handleSubmit} className="space-y-3">
-          <div className="grid gap-3 sm:grid-cols-[12rem_1fr]">
+          <div className="grid gap-3 sm:grid-cols-[12rem_12rem_1fr]">
+            <div>
+              <label htmlFor={`${formId}-area`} className="text-xs font-medium text-muted-foreground">
+                Área
+              </label>
+              <AreaSelect id={`${formId}-area`} value={area} areas={area && !areas.includes(area) ? [...areas, area] : areas} onChange={setArea} className="mt-1 w-full" />
+            </div>
             <div>
               <label htmlFor={`${formId}-frente`} className="text-xs font-medium text-muted-foreground">
                 Frente

@@ -37,7 +37,12 @@ export interface Acao {
   fixo?: boolean;
   // Pendência crítica: destacada como "Máxima atenção" em todo o portal.
   critico?: boolean;
+  // Área da empresa a que a ação compete (escolhida pelo site).
+  area?: string;
 }
+
+// Áreas sugeridas; o site permite incluir outras.
+export const AREAS = ["Diretoria", "Engenharia", "Manutenção", "Logística", "Fiscal e Contábil", "Financeiro", "Comercial", "TI", "RH"];
 
 export const ACOES: Acao[] = [
   { id: "a19", f: "Contratual", a: "Assinar contrato de locação do galpão da MEGA LOJA AV BRASIL", i: "2026-10-01", p: "2026-10-01", r: "", s: "Concluído", o: "Contrato assinado", fixo: true },

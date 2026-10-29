@@ -16,8 +16,12 @@ export interface AcaoPatch {
   // Início e prazo editados pelo site (prevalecem sobre os dados base).
   i?: string;
   p?: string;
+  area?: string;
   atualizadoEm?: string;
 }
+
+// Campos de uma ação que podem ser alterados pela tabela do plano.
+export type EdicaoAcao = Pick<AcaoPatch, "s" | "r" | "i" | "p" | "area">;
 
 export interface DecisaoPatch {
   status?: string;
@@ -26,7 +30,7 @@ export interface DecisaoPatch {
 }
 
 // Ação incluída pelo site (não faz parte dos dados base do projeto).
-export type AcaoCustom = Pick<Acao, "f" | "a" | "i" | "p" | "r" | "s" | "o"> & {
+export type AcaoCustom = Pick<Acao, "f" | "a" | "i" | "p" | "r" | "s" | "o" | "area"> & {
   criadoEm: string;
   atualizadoEm?: string;
 };

@@ -94,7 +94,7 @@ export function montarRelatorio({ acoes, estadoDecisoes, decisoesCustom }: Dados
       <h3>${titulo}</h3>
       ${
         itens.length
-          ? `<ul>${itens.map((x) => `<li><span class="data">${fmt(x.p)}</span> ${esc(x.a)} <span class="muted">· ${esc(x.f)}${x.r ? ` · ${esc(x.r)}` : ""}</span></li>`).join("")}</ul>`
+          ? `<ul>${itens.map((x) => `<li><span class="data">${fmt(x.p)}</span> ${esc(x.a)} <span class="muted">· ${esc(x.f)}${x.area ? ` · ${esc(x.area)}` : ""}${x.r ? ` · ${esc(x.r)}` : ""}</span></li>`).join("")}</ul>`
           : `<p class="muted">${vazio}</p>`
       }
     </div>`;
