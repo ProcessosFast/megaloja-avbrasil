@@ -44,7 +44,7 @@ export default function App() {
         ? "Sincronizado"
         : `Base de ${new Date(PROJETO.atualizadoEm).toLocaleDateString("pt-BR")} · alterações salvas neste navegador`;
 
-  function handleAcaoUpdate(id: string, patch: { s?: Status; r?: string; p?: string }) {
+  function handleAcaoUpdate(id: string, patch: { s?: Status; r?: string; i?: string; p?: string }) {
     salvar(estado.acoesCustom[id] ? "acoesCustom" : "acoes", id, patch);
     toast.success("Alteração salva");
   }

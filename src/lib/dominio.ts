@@ -30,8 +30,6 @@ export type Situacao = "Concluído" | "No prazo" | "Atenção" | "Atrasado" | "S
 
 export interface AcaoComEstado extends Acao {
   sit: Situacao;
-  // true quando o prazo pode ser definido pelo site (não veio nos dados base).
-  prazoEditavel: boolean;
   // true para ações incluídas pelo site (podem ser excluídas; salvas em acoesCustom).
   custom?: boolean;
 }
@@ -50,17 +48,17 @@ export function situacao(x: { s: Status; p: string }): Situacao {
 export function acoesAtuais(estAcoes: EstadoAcoes, estCustom: EstadoAcoesCustom = {}): AcaoComEstado[] {
   const base = ACOES.map((x) => {
     const o = estAcoes[x.id] || {};
-    const prazoEditavel = !x.p;
-    const p = x.p || (prazoEditavel && o.p) || "";
-    const i = x.i || (prazoEditavel && o.p) || "";
+    // Datas editadas pelo site prevalecem sobre as do plano base.
+    const p = o.p ?? x.p;
+    const i = o.i || x.i || (x.p ? "" : p);
     const m: Acao = { ...x, s: x.fixo ? x.s : (o.s ?? x.s), r: o.r ?? x.r, i, p };
-    return { ...m, sit: situacao(m), prazoEditavel };
+    return { ...m, sit: situacao(m) };
   });
   const incluidas = Object.entries(estCustom)
     .sort(([, a], [, b]) => (a.criadoEm || "").localeCompare(b.criadoEm || ""))
     .map(([id, x]): AcaoComEstado => {
       const m: Acao = { id, f: x.f, a: x.a, i: x.i, p: x.p || "", r: x.r, s: x.s, o: x.o || "" };
-      return { ...m, sit: situacao(m), prazoEditavel: true, custom: true };
+      return { ...m, sit: situacao(m), custom: true };
     });
   return [...base, ...incluidas];
 }

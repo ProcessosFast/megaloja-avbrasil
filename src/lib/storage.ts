@@ -13,7 +13,8 @@ const INTERVALO_SYNC = 15_000;
 export interface AcaoPatch {
   s?: Status;
   r?: string;
-  // Prazo definido pelo site (só para ações sem prazo nos dados base).
+  // Início e prazo editados pelo site (prevalecem sobre os dados base).
+  i?: string;
   p?: string;
   atualizadoEm?: string;
 }

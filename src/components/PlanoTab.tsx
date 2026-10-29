@@ -30,7 +30,7 @@ const SITUACOES: Situacao[] = ["No prazo", "Atenção", "Atrasado", "Concluído"
 interface PlanoTabProps {
   acoes: AcaoComEstado[];
   podeEditar: boolean;
-  onUpdate: (id: string, patch: { s?: Status; r?: string; p?: string }) => void;
+  onUpdate: (id: string, patch: { s?: Status; r?: string; i?: string; p?: string }) => void;
   onCriar: (dados: Omit<AcaoCustom, "s" | "criadoEm">) => void;
   onExcluir: (id: string) => void;
 }
@@ -139,24 +139,35 @@ export function PlanoTab({ acoes, podeEditar, onUpdate, onCriar, onExcluir }: Pl
                     <Badge className="ml-2 bg-destructive text-white">Pendente · Máxima atenção</Badge>
                   )}
                 </TableCell>
-                <TableCell>{fmt(x.i)}</TableCell>
                 <TableCell>
-                  {x.prazoEditavel ? (
-                    <Input
-                      type="date"
-                      key={x.p}
-                      defaultValue={x.p}
-                      disabled={!podeEditar}
-                      aria-label={`Prazo de "${x.a}"`}
-                      className="h-8 w-36"
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        if (v !== x.p && (v === "" || dataValida(v))) onUpdate(x.id, { p: v });
-                      }}
-                    />
-                  ) : (
-                    fmt(x.p)
-                  )}
+                  <Input
+                    type="date"
+                    key={x.i}
+                    defaultValue={x.i}
+                    disabled={!podeEditar}
+                    aria-label={`Início de "${x.a}"`}
+                    className="h-8 w-36"
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      // Ação incluída pelo site não pode ficar sem data de início.
+                      if (v === "" && x.custom) return;
+                      if (v !== x.i && (v === "" || dataValida(v))) onUpdate(x.id, { i: v });
+                    }}
+                  />
+                </TableCell>
+                <TableCell>
+                  <Input
+                    type="date"
+                    key={x.p}
+                    defaultValue={x.p}
+                    disabled={!podeEditar}
+                    aria-label={`Prazo de "${x.a}"`}
+                    className="h-8 w-36"
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      if (v !== x.p && (v === "" || dataValida(v))) onUpdate(x.id, { p: v });
+                    }}
+                  />
                 </TableCell>
                 <TableCell>
                   <Input
@@ -220,8 +231,8 @@ export function PlanoTab({ acoes, podeEditar, onUpdate, onCriar, onExcluir }: Pl
       <p className="text-xs text-muted-foreground">
         Situação calculada automaticamente pela data do dia: <b>Atrasado</b> quando o prazo passou
         sem conclusão; <b>Atenção</b> quando faltam até 2 dias para o prazo; <b>No prazo</b> nos
-        demais casos. Ações sem prazo definido no plano podem ter o prazo preenchido direto na
-        coluna <b>Prazo</b>. Para incluir uma ação nova, use <b>+ Nova ação</b>: ela só é salva
+        demais casos. As datas de <b>Início</b> e <b>Prazo</b> de qualquer ação podem ser alteradas
+        direto na tabela. Para incluir uma ação nova, use <b>+ Nova ação</b>: ela só é salva
         com data de início e responsável preenchidos.
       </p>
     </div>
