@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { CronogramaTab } from "@/components/CronogramaTab";
 import { DashboardTab } from "@/components/DashboardTab";
@@ -19,21 +19,38 @@ import { exportarPlanoExcel } from "@/lib/excel";
 
 const OPCAO_PENDENTE_CUSTOM = "Aguardando decisão";
 const ABAS = ["dashboard", "cronograma", "plano", "decisoes", "pessoal", "recursos"];
+const ABA_KEY = "mega-loja-av-brasil:aba";
 
 const TAB_CLASS =
   "h-auto shrink-0 whitespace-nowrap rounded-md border border-transparent px-4 py-2 text-sm font-semibold text-foreground/70 transition-colors hover:border-border hover:bg-accent hover:text-foreground data-active:border-primary data-active:bg-primary data-active:text-primary-foreground data-active:shadow-none after:hidden";
 
 export default function App() {
   const { estado, modo, podeEditar, salvar, remover } = useEstado();
-  // A aba aberta fica no endereço (#plano etc.), para continuar nela ao atualizar a página.
+  // A aba aberta fica no endereço (#plano etc.) e na sessão da guia, para continuar nela ao
+  // atualizar a página mesmo que o endereço perca o "#".
   const [aba, setAbaState] = useState(() => {
     const h = window.location.hash.slice(1);
-    return ABAS.includes(h) ? h : "dashboard";
+    if (ABAS.includes(h)) return h;
+    try {
+      const s = sessionStorage.getItem(ABA_KEY) || "";
+      if (ABAS.includes(s)) return s;
+    } catch {
+      // sessão indisponível
+    }
+    return "dashboard";
   });
 
+  useEffect(() => {
+    history.replaceState(null, "", `#${aba}`);
+    try {
+      sessionStorage.setItem(ABA_KEY, aba);
+    } catch {
+      // sessão indisponível; o endereço já guarda a aba
+    }
+  }, [aba]);
+
   function setAba(v: string) {
-    setAbaState(v);
-    history.replaceState(null, "", v === "dashboard" ? window.location.pathname + window.location.search : `#${v}`);
+    if (ABAS.includes(v)) setAbaState(v);
   }
 
   const acoes = useMemo(() => acoesAtuais(estado.acoes, estado.acoesCustom), [estado.acoes, estado.acoesCustom]);
