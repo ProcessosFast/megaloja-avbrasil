@@ -19,13 +19,23 @@ import { abrirRelatorio } from "@/lib/relatorio";
 import { exportarPlanoExcel } from "@/lib/excel";
 
 const OPCAO_PENDENTE_CUSTOM = "Aguardando decisão";
+const ABAS = ["dashboard", "cronograma", "plano", "decisoes", "pessoal", "recursos"];
 
 const TAB_CLASS =
   "h-auto shrink-0 whitespace-nowrap rounded-md border border-transparent px-4 py-2 text-sm font-semibold text-foreground/70 transition-colors hover:border-border hover:bg-accent hover:text-foreground data-active:border-primary data-active:bg-primary data-active:text-primary-foreground data-active:shadow-none after:hidden";
 
 export default function App() {
   const { estado, modo, podeEditar, salvar, remover } = useEstado();
-  const [aba, setAba] = useState("dashboard");
+  // A aba aberta fica no endereço (#plano etc.), para continuar nela ao atualizar a página.
+  const [aba, setAbaState] = useState(() => {
+    const h = window.location.hash.slice(1);
+    return ABAS.includes(h) ? h : "dashboard";
+  });
+
+  function setAba(v: string) {
+    setAbaState(v);
+    history.replaceState(null, "", v === "dashboard" ? window.location.pathname + window.location.search : `#${v}`);
+  }
 
   const acoes = useMemo(() => acoesAtuais(estado.acoes, estado.acoesCustom), [estado.acoes, estado.acoesCustom]);
   const decPendentes = useMemo(() => {
