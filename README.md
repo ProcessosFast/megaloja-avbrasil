@@ -24,42 +24,26 @@ Gera os arquivos estáticos em `dist/`.
 
 O push para `main` dispara o deploy automático na Vercel.
 
-## Banco de dados compartilhado (Supabase)
+## Banco de dados compartilhado (Upstash Redis na Vercel)
 
-Sem configurar isso, cada visitante só vê as próprias alterações (salvas no
-`localStorage` do navegador dele). Para que status e decisões fiquem
-visíveis para todo mundo:
+Status das ações e decisões ficam salvos no Upstash Redis, via a função
+`api/state.js` (hashes `ml:acoes`, `ml:decisoes`, `ml:decisoesCustom`).
+O site lê o banco ao abrir, a cada 15 segundos e ao voltar para a aba.
 
-1. Crie um projeto grátis em [supabase.com](https://supabase.com).
-2. No **SQL Editor**, rode:
+Para ligar: na Vercel, **Storage > Upstash for Redis** (pode ser o mesmo banco
+dos outros portais) **> Connect Project > megaloja-avbrasil** e faça um
+redeploy. Teste em https://megaloja-avbrasil.vercel.app/api/state.
 
-   ```sql
-   create table estado (
-     colecao text not null,
-     id text not null,
-     dados jsonb not null default '{}'::jsonb,
-     atualizado_em timestamptz not null default now(),
-     primary key (colecao, id)
-   );
-
-   alter table estado enable row level security;
-   create policy "leitura publica" on estado for select using (true);
-   create policy "escrita publica" on estado for all using (true) with check (true);
-   alter publication supabase_realtime add table estado;
-   ```
-
-3. Em **Project Settings > API**, copie a **Project URL** e a chave **anon public**.
-4. Localmente, copie `.env.example` para `.env` e preencha as duas variáveis.
-5. Na Vercel, adicione as mesmas variáveis em **Project Settings > Environment
-   Variables** (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`) e faça um redeploy.
-
-Sem essas variáveis o app funciona normalmente, só que sem sincronizar entre
-visitantes (fallback automático para `localStorage`).
+Sem o banco conectado o app funciona normalmente, só que sem sincronizar entre
+visitantes (fallback automático para `localStorage`). Quando o banco é ligado,
+as alterações que cada navegador tinha salvas localmente são somadas a ele na
+primeira visita.
 
 ## Estrutura
 
 - `src/data/projeto.ts` — dados do projeto (ações, decisões, pessoal, recursos)
 - `src/lib/dominio.ts` — regras de negócio (situação, prazos, filtros)
-- `src/lib/storage.ts` — persistência do estado editável (Supabase, com fallback local)
+- `api/state.js` — API do banco (função serverless da Vercel)
+- `src/lib/storage.ts` — persistência do estado editável (Upstash via /api/state, com fallback local)
 - `src/components/*Tab.tsx` — uma aba por seção do dashboard
 - `legacy/INDEX.html` — versão anterior em HTML/CSS/JS puro, mantida como referência

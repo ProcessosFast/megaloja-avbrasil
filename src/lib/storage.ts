@@ -1,12 +1,14 @@
 // Estado editável + persistência.
-// Ordem de prioridade: Supabase (compartilhado entre todos os visitantes) >
+// Ordem de prioridade: /api/state (Upstash Redis na Vercel, compartilhado entre todos) >
 // window.claude (artifact db, quando embutido como artifact) > localStorage (só este navegador).
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Status } from "@/data/projeto";
-import { supabase } from "@/lib/supabase";
-import type { RealtimeChannel } from "@supabase/supabase-js";
 
 const LOCAL_KEY = "mega-loja-av-brasil";
+// Marca que as alterações deste navegador já foram somadas ao banco.
+const MIGRADO_KEY = "mega-loja-av-brasil:migrado";
+const API = "/api/state";
+const INTERVALO_SYNC = 15_000;
 
 export interface AcaoPatch {
   s?: Status;
@@ -87,64 +89,101 @@ function lerLocal(): Estado {
 }
 
 function gravarLocal(estado: Estado) {
-  localStorage.setItem(LOCAL_KEY, JSON.stringify(estado));
+  try {
+    localStorage.setItem(LOCAL_KEY, JSON.stringify(estado));
+  } catch {
+    // navegador sem localStorage; o banco continua valendo
+  }
 }
 
-interface LinhaEstado {
-  colecao: Colecao;
-  id: string;
-  dados: AcaoPatch | DecisaoPatch | DecisaoCustom;
+type Patches = Partial<Record<Colecao, Record<string, unknown>>>;
+
+async function lerApi(): Promise<Estado> {
+  const r = await fetch(API, { cache: "no-store" });
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  const d = (await r.json()) as Partial<Estado>;
+  return { acoes: d.acoes || {}, decisoes: d.decisoes || {}, decisoesCustom: d.decisoesCustom || {} };
+}
+
+async function gravarApi(patches: Patches) {
+  const r = await fetch(API, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ patches }),
+  });
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+}
+
+// Registros que só existem neste navegador (ou que aqui são mais recentes) e ainda não estão no banco.
+function pendentesLocais(local: Estado, remoto: Estado): Patches | null {
+  const patches: Patches = {};
+  let algum = false;
+  for (const col of COLECOES) {
+    for (const [id, dados] of Object.entries(local[col])) {
+      const r = remoto[col][id] as { atualizadoEm?: string } | undefined;
+      const l = dados as { atualizadoEm?: string };
+      if (!r || (l.atualizadoEm && (!r.atualizadoEm || l.atualizadoEm > r.atualizadoEm))) {
+        (patches[col] ??= {})[id] = dados;
+        algum = true;
+      }
+    }
+  }
+  return algum ? patches : null;
 }
 
 export function useEstado() {
-  const [estado, setEstado] = useState<Estado>(() => (supabase ? estadoVazio() : lerLocal()));
+  const [estado, setEstado] = useState<Estado>(lerLocal);
   const [modo, setModo] = useState<Modo>("carregando");
   const [podeEditar, setPodeEditar] = useState(true);
   const dbRef = useRef<ClaudeDb | null>(null);
+  const apiRef = useRef(false);
+  // Muda a cada gravação local, para descartar leituras do banco que começaram antes dela.
+  const versaoRef = useRef(0);
   const estadoRef = useRef(estado);
   estadoRef.current = estado;
 
   useEffect(() => {
     let cancelado = false;
-    let canal: RealtimeChannel | null = null;
+    let timer: ReturnType<typeof setInterval> | undefined;
 
-    async function iniciarSupabase(): Promise<boolean> {
-      if (!supabase) return false;
+    async function sincronizar() {
+      const versao = versaoRef.current;
       try {
-        const { data, error } = await supabase.from("estado").select("colecao,id,dados");
-        if (error) throw error;
+        const remoto = await lerApi();
+        if (!cancelado && versao === versaoRef.current) {
+          setEstado(remoto);
+          gravarLocal(remoto);
+        }
+      } catch {
+        // sem conexão no momento; tenta de novo no próximo ciclo
+      }
+    }
+
+    function aoVoltar() {
+      if (document.visibilityState === "visible") sincronizar();
+    }
+
+    async function iniciarApi(): Promise<boolean> {
+      try {
+        let remoto = await lerApi();
         if (cancelado) return true;
 
-        const novo = estadoVazio();
-        for (const row of (data ?? []) as LinhaEstado[]) {
-          if (COLECOES.includes(row.colecao)) {
-            (novo[row.colecao] as Record<string, unknown>)[row.id] = row.dados;
+        if (!localStorage.getItem(MIGRADO_KEY)) {
+          const pendentes = pendentesLocais(lerLocal(), remoto);
+          if (pendentes) {
+            await gravarApi(pendentes);
+            remoto = await lerApi();
           }
+          localStorage.setItem(MIGRADO_KEY, "1");
         }
-        setEstado(novo);
+        if (cancelado) return true;
+
+        apiRef.current = true;
+        setEstado(remoto);
+        gravarLocal(remoto);
         setModo("online");
-
-        canal = supabase
-          .channel("estado-sync")
-          .on(
-            "postgres_changes",
-            { event: "*", schema: "public", table: "estado" },
-            (payload) => {
-              const linha = (payload.new ?? payload.old) as LinhaEstado | undefined;
-              if (!linha || !COLECOES.includes(linha.colecao)) return;
-              setEstado((prev) => {
-                const alvo = { ...prev[linha.colecao] } as Record<string, unknown>;
-                if (payload.eventType === "DELETE") {
-                  delete alvo[linha.id];
-                } else {
-                  alvo[linha.id] = (payload.new as LinhaEstado).dados;
-                }
-                return { ...prev, [linha.colecao]: alvo };
-              });
-            },
-          )
-          .subscribe();
-
+        timer = setInterval(sincronizar, INTERVALO_SYNC);
+        document.addEventListener("visibilitychange", aoVoltar);
         return true;
       } catch {
         return false;
@@ -186,7 +225,7 @@ export function useEstado() {
     }
 
     async function iniciar() {
-      if (await iniciarSupabase()) return;
+      if (await iniciarApi()) return;
       if (await iniciarClaude()) return;
       if (!cancelado) {
         setEstado(lerLocal());
@@ -197,7 +236,8 @@ export function useEstado() {
     iniciar();
     return () => {
       cancelado = true;
-      if (canal && supabase) supabase.removeChannel(canal);
+      if (timer) clearInterval(timer);
+      document.removeEventListener("visibilitychange", aoVoltar);
     };
   }, []);
 
@@ -208,16 +248,14 @@ export function useEstado() {
 
       setEstado((prev) => {
         const proximo: Estado = { ...prev, [col]: { ...prev[col], [id]: novo } };
-        if (modo !== "online") gravarLocal(proximo);
+        if (modo !== "online" || apiRef.current) gravarLocal(proximo);
         return proximo;
       });
+      versaoRef.current++;
 
-      if (supabase) {
+      if (apiRef.current) {
         try {
-          await supabase.from("estado").upsert(
-            { colecao: col, id, dados: novo, atualizado_em: new Date().toISOString() },
-            { onConflict: "colecao,id" },
-          );
+          await gravarApi({ [col]: { [id]: novo } });
         } catch {
           // falha de escrita remota; estado local já foi atualizado
         }
@@ -238,13 +276,14 @@ export function useEstado() {
         const alvo = { ...prev[col] };
         delete alvo[id];
         const proximo: Estado = { ...prev, [col]: alvo };
-        if (modo !== "online") gravarLocal(proximo);
+        if (modo !== "online" || apiRef.current) gravarLocal(proximo);
         return proximo;
       });
+      versaoRef.current++;
 
-      if (supabase) {
+      if (apiRef.current) {
         try {
-          await supabase.from("estado").delete().eq("colecao", col).eq("id", id);
+          await gravarApi({ [col]: { [id]: null } });
         } catch {
           // falha de escrita remota; estado local já foi atualizado
         }
